@@ -6,13 +6,14 @@ import { FolioSpine } from './FolioSpine';
 import { ControlDeck } from './ControlDeck';
 
 import { Scene01Welcome } from '../scenes/Scene01Welcome';
-import { Scene02CollegeDept } from '../scenes/Scene02CollegeDept';
-import { Scene03VisionMission } from '../scenes/Scene03VisionMission';
-import { Scene04AcademicToppers } from '../scenes/Scene04AcademicToppers';
-import { Scene05Hackathons } from '../scenes/Scene05Hackathons';
-import { Scene06Events } from '../scenes/Scene06Events';
-import { Scene07Placements } from '../scenes/Scene07Placements';
-import { Scene08DepartmentGlance } from '../scenes/Scene08DepartmentGlance';
+import { Scene02Department } from '../scenes/Scene02Department';
+import { Scene03CollegeDept } from '../scenes/Scene03CollegeDept';
+import { Scene04VisionMission } from '../scenes/Scene04VisionMission';
+import { Scene05AcademicToppers } from '../scenes/Scene05AcademicToppers';
+import { Scene06Hackathons } from '../scenes/Scene06Hackathons';
+import { Scene07Events } from '../scenes/Scene07Events';
+import { Scene08Placements } from '../scenes/Scene08Placements';
+import { Scene09DepartmentGlance } from '../scenes/Scene09DepartmentGlance';
 
 // Open the deck on a specific scene with `?scene=4`, and hold it there with
 // `?scene=4&paused=1`. Useful for rehearsing one slide without sitting through
@@ -37,8 +38,14 @@ export const PresentationShell = () => {
 
   const sceneContainerRef = useRef(null);
 
+  // The authoritative scene clock. `elapsed` state exists only to drive the
+  // progress bar and the frame cycle; the ref is what the timer reads, so a
+  // re-render can never lose or double-count a tick.
+  const elapsedRef = useRef(0);
+
   const sceneTitles = [
-    "Welcome & Opening",
+    "Welcome",
+    "Department of IT",
     "College & Department",
     "Vision & Mission",
     "Academic Toppers",
@@ -50,48 +57,46 @@ export const PresentationShell = () => {
 
   const totalScenes = sceneTitles.length;
 
-  // Clamp a hand-typed ?scene= that points past the end of the deck.
-  useEffect(() => {
-    if (currentScene > totalScenes - 1) setCurrentScene(0);
-  }, [currentScene, totalScenes]);
-
   const nextScene = useCallback(() => {
     setCurrentScene((prev) => (prev < totalScenes - 1 ? prev + 1 : 0));
+    elapsedRef.current = 0;
     setElapsed(0);
   }, [totalScenes]);
 
   const prevScene = useCallback(() => {
     setCurrentScene((prev) => (prev > 0 ? prev - 1 : prev));
+    elapsedRef.current = 0;
     setElapsed(0);
   }, []);
 
   const selectScene = (index) => {
     setCurrentScene(index);
+    elapsedRef.current = 0;
     setElapsed(0);
   };
 
-  // Each scene holds a single screenful — nothing scrolls. The timer only
-  // advances the clock; the frame cycle below turns that clock into an
-  // in / hold / out choreography.
+  // Each scene holds a single screenful — nothing scrolls. The timer advances
+  // the clock and hands off at the end; the frame cycle below turns that clock
+  // into an in / hold / out choreography.
   //
-  // The updater stays pure: advancing the deck from inside it made StrictMode's
-  // double-invocation fire `nextScene()` twice, which skipped a scene.
+  // nextScene() is called from the interval callback, never from inside a state
+  // updater: StrictMode double-invokes updaters, which advanced the deck twice
+  // and skipped a scene.
   useEffect(() => {
     if (!isPlaying) return;
 
     const intervalTime = 100; // update progress every 100ms
     const timer = setInterval(() => {
-      setElapsed((prev) => prev + intervalTime / 1000);
+      elapsedRef.current += intervalTime / 1000;
+      if (elapsedRef.current >= speed) {
+        elapsedRef.current = 0;
+        nextScene();
+      }
+      setElapsed(elapsedRef.current);
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [isPlaying]);
-
-  // Advance once the clock runs out. `nextScene` resets `elapsed`, so this
-  // fires exactly once per scene.
-  useEffect(() => {
-    if (isPlaying && elapsed >= speed) nextScene();
-  }, [isPlaying, elapsed, speed, nextScene]);
+  }, [isPlaying, speed, nextScene]);
 
   // Keyboard navigation shortcuts
   useEffect(() => {
@@ -152,13 +157,14 @@ export const PresentationShell = () => {
   const renderSceneContent = (index) => {
     switch (index) {
       case 0: return <Scene01Welcome isActive={isFrameOpen} onStartClick={() => { selectScene(1); setIsPlaying(true); }} />;
-      case 1: return <Scene02CollegeDept isActive={isFrameOpen} />;
-      case 2: return <Scene03VisionMission isActive={isFrameOpen} />;
-      case 3: return <Scene04AcademicToppers isActive={isFrameOpen} />;
-      case 4: return <Scene05Hackathons isActive={isFrameOpen} duration={speed} />;
-      case 5: return <Scene06Events isActive={isFrameOpen} />;
-      case 6: return <Scene07Placements isActive={isFrameOpen} />;
-      case 7: return <Scene08DepartmentGlance isActive={isFrameOpen} />;
+      case 1: return <Scene02Department isActive={isFrameOpen} />;
+      case 2: return <Scene03CollegeDept isActive={isFrameOpen} />;
+      case 3: return <Scene04VisionMission isActive={isFrameOpen} />;
+      case 4: return <Scene05AcademicToppers isActive={isFrameOpen} />;
+      case 5: return <Scene06Hackathons isActive={isFrameOpen} duration={speed} />;
+      case 6: return <Scene07Events isActive={isFrameOpen} />;
+      case 7: return <Scene08Placements isActive={isFrameOpen} />;
+      case 8: return <Scene09DepartmentGlance isActive={isFrameOpen} />;
       default: return null;
     }
   };

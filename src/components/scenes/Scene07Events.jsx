@@ -18,13 +18,13 @@ const INK = {
   sapphire: { text: 'text-sapphire-bright', rule: 'bg-sapphire' }
 };
 
-export const Scene06Events = ({ isActive }) => {
+export const Scene07Events = ({ isActive }) => {
   const events = presentationData.events;
 
   return (
     <div className="relative w-full h-full overflow-hidden">
       <span className="folio-ghost absolute -top-[0.06em] right-3 md:right-10 text-[34vw] md:text-[20vw] text-sapphire/[0.07]">
-        06
+        07
       </span>
 
       <motion.div
@@ -34,7 +34,7 @@ export const Scene06Events = ({ isActive }) => {
         className="relative z-10 h-full flex flex-col justify-center px-7 md:px-16 py-8 gap-6 max-w-7xl"
       >
         <SceneHeader
-          folio="06"
+          folio="07"
           kicker="Department Programme"
           title="Events & Initiatives"
           tone="sapphire"

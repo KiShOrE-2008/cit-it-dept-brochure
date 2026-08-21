@@ -19,7 +19,7 @@ const INK = {
   sapphire: { text: 'text-sapphire-bright', rule: 'bg-sapphire', border: 'border-sapphire/50' }
 };
 
-export const Scene07Placements = ({ isActive }) => {
+export const Scene08Placements = ({ isActive }) => {
   const [records, setRecords] = useState(placementsData);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export const Scene07Placements = ({ isActive }) => {
         className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-9 max-w-7xl"
       >
         <SceneHeader
-          folio="07"
+          folio="08"
           kicker="Career Outcomes"
           title={['Placements &', 'Recruiters']}
           accentLine={1}

@@ -17,13 +17,13 @@ const MISSION_INKS = [
 
 const MISSION_RULES = ['bg-brass', 'bg-oxblood', 'bg-verdigris', 'bg-sapphire', 'bg-brass'];
 
-export const Scene03VisionMission = ({ isActive }) => {
+export const Scene04VisionMission = ({ isActive }) => {
   const { quote, mission } = presentationData.vision;
 
   return (
     <div className="relative w-full min-h-full overflow-hidden">
       <span className="folio-ghost absolute -top-[0.08em] right-2 md:right-10 text-[40vw] md:text-[24vw] text-verdigris/[0.08]">
-        03
+        04
       </span>
 
       <motion.div
@@ -32,7 +32,7 @@ export const Scene03VisionMission = ({ isActive }) => {
         animate={isActive ? 'show' : 'hidden'}
         className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-8 gap-6 max-w-6xl"
       >
-        <SceneHeader folio="03" kicker="What We Stand For" title="Vision & Mission" tone="verdigris" />
+        <SceneHeader folio="04" kicker="What We Stand For" title="Vision & Mission" tone="verdigris" />
 
         {/* The vision, set as the largest passage on the page */}
         <motion.blockquote variants={fadeUp} className="relative pl-6 md:pl-8 max-w-4xl">

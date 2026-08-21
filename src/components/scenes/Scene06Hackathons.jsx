@@ -22,7 +22,7 @@ const INKS = {
   sapphire: { text: 'text-sapphire-bright', bg: 'bg-sapphire', border: 'border-sapphire', chip: 'bg-sapphire text-ink' }
 };
 
-export const Scene05Hackathons = ({ isActive, duration = 22 }) => {
+export const Scene06Hackathons = ({ isActive, duration = 22 }) => {
   const [achievements, setAchievements] = useState(achievementsData);
   const [activeIdx, setActiveIdx] = useState(0);
 
@@ -49,17 +49,15 @@ export const Scene05Hackathons = ({ isActive, duration = 22 }) => {
   const plateCount = features.length;
   useEffect(() => {
     if (!isActive || plateCount < 2) return;
-    const holdMs = Math.max(2000, ((duration - EXIT_LEAD) * 1000) / plateCount);
+    // Floor sits below the Fast preset's share (9s / 4 plates) so every plate
+    // still gets its turn when the deck is running quickly.
+    const holdMs = Math.max(1500, ((duration - EXIT_LEAD) * 1000) / plateCount);
     const timer = setInterval(() => {
       setActiveIdx((prev) => (prev + 1 < plateCount ? prev + 1 : prev));
     }, holdMs);
     return () => clearInterval(timer);
   }, [isActive, plateCount, duration]);
 
-  // Restart at the first plate each time the scene opens.
-  useEffect(() => {
-    if (isActive) setActiveIdx(0);
-  }, [isActive]);
 
   if (!features.length) return null;
 
@@ -86,7 +84,7 @@ export const Scene05Hackathons = ({ isActive, duration = 22 }) => {
         className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-8 max-w-7xl"
       >
         <SceneHeader
-          folio="05"
+          folio="06"
           kicker="National & International Arena"
           title={['Hackathon', 'Champions']}
           accentLine={1}

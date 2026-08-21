@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A single-page **cinematic auto-advancing presentation** (not a website) built for the CIT Department of Information Technology Parents' Meeting 2026. It runs fullscreen in a browser, auto-plays through 8 scenes on a timer, and is driven live by a presenter via keyboard/control deck. React 19 + Vite 8 + Tailwind CSS v4 + framer-motion. Plain JSX — no TypeScript, no router, no test framework.
+A single-page **cinematic auto-advancing presentation** (not a website) built for the CIT Department of Information Technology Parents' Meeting 2026. It runs fullscreen in a browser, auto-plays through 9 scenes on a timer, and is driven live by a presenter via keyboard/control deck. React 19 + Vite 8 + Tailwind CSS v4 + framer-motion. Plain JSX — no TypeScript, no router, no test framework.
 
 ## Commands
 
@@ -18,7 +18,7 @@ npm run lint      # oxlint (config in .oxlintrc.json)
 
 There is no test runner configured — don't invent one or claim tests pass.
 
-Lint currently emits 4 known warnings (two unused vars in the seed script, `set-state-in-effect` in `AnimatedCounter`, and `toggleFullscreen` self-capture in `PresentationShell`). Zero errors — treat any *new* warning as yours.
+Lint currently emits 3 known warnings (two unused vars in the seed script, and `toggleFullscreen` self-capture in `PresentationShell`). Zero errors — treat any *new* warning as yours.
 
 ### Seeding Supabase
 
@@ -51,18 +51,24 @@ The deck is **not** derived from the filesystem. It is defined by two structures
 
 Adding, removing, or reordering a scene means touching both; a title with no matching case renders a blank scene that still consumes its full `speed` seconds.
 
-Current deck — 8 scenes, filenames aligned to deck order:
+Current deck — 9 scenes, filenames aligned to deck order. Adding or removing a
+scene means renumbering the files that follow it, so that alignment holds:
 
 | # | Scene | Source of truth |
 |---|---|---|
-| 1 | `Scene01Welcome` | `presentationData` |
-| 2 | `Scene02CollegeDept` | `presentationData` |
-| 3 | `Scene03VisionMission` | `presentationData.vision` |
-| 4 | `Scene04AcademicToppers` | `academicToppers` |
-| 5 | `Scene05Hackathons` | Supabase `achievements` + `hackathonFeatures` |
-| 6 | `Scene06Events` | `presentationData.events` |
-| 7 | `Scene07Placements` | Supabase `placements` |
-| 8 | `Scene08DepartmentGlance` | `presentationData.departmentGlance` |
+| 1 |  | none — the greeting to the room, no statistics by design |
+| 2 |  |  |
+| 3 |  |  |
+| 4 |  |  |
+| 5 |  |  |
+| 6 |  | Supabase  +  |
+| 7 |  |  |
+| 8 |  | Supabase  |
+| 9 |  |  |
+
+Speed presets live in : Fast 9s, Normal 22s, Slow 35s per scene.
+ divides its own runtime across the four plates, so its
+floor must stay under the Fast preset's share.
 
 ### Checking fit
 

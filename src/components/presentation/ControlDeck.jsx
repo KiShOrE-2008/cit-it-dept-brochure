@@ -104,7 +104,7 @@ export const ControlDeck = ({
 
       <div className="hidden sm:flex items-center gap-0.5">
         {[
-          { label: 'Fast', sec: 14 },
+          { label: 'Fast', sec: 9 },
           { label: 'Normal', sec: 22 },
           { label: 'Slow', sec: 35 }
         ].map((s) => (

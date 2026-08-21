@@ -20,13 +20,13 @@ const TILE_INK = [
   'brass'
 ];
 
-export const Scene08DepartmentGlance = ({ isActive }) => {
+export const Scene09DepartmentGlance = ({ isActive }) => {
   const tiles = presentationData.departmentGlance;
 
   return (
     <div className="relative w-full min-h-full overflow-hidden">
       <span className="folio-ghost absolute -top-[0.08em] right-2 md:right-10 text-[40vw] md:text-[24vw] text-brass/[0.09]">
-        08
+        09
       </span>
 
       <motion.div
@@ -36,7 +36,7 @@ export const Scene08DepartmentGlance = ({ isActive }) => {
         className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-9 max-w-7xl"
       >
         <SceneHeader
-          folio="08"
+          folio="09"
           kicker="The Record in Summary"
           title={['Department', 'at a Glance']}
           accentLine={1}

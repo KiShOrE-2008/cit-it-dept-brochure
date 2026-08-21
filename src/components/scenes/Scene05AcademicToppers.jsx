@@ -96,13 +96,13 @@ const YearColumn = ({ group }) => {
   );
 };
 
-export const Scene04AcademicToppers = ({ isActive }) => {
+export const Scene05AcademicToppers = ({ isActive }) => {
   const stats = computeTopperStats();
 
   return (
     <div className="relative w-full min-h-full overflow-hidden">
       <span className="folio-ghost absolute -top-[0.08em] right-2 md:right-10 text-[40vw] md:text-[24vw] text-brass/[0.09]">
-        04
+        05
       </span>
 
       <motion.div
@@ -113,7 +113,7 @@ export const Scene04AcademicToppers = ({ isActive }) => {
       >
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           <SceneHeader
-            folio="04"
+            folio="05"
             kicker="Semester Result Analysis"
             title={['Academic', 'Toppers']}
             accentLine={1}

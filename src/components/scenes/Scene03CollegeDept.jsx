@@ -8,7 +8,7 @@ import { LedgerRow } from '../ui/LedgerRow';
 
 // Chapter ink: sapphire. Institution on the left as a record, the campus
 // on the right as a plate — the two halves of a dossier spread.
-export const Scene02CollegeDept = ({ isActive }) => {
+export const Scene03CollegeDept = ({ isActive }) => {
   const campusImage = getAssetImageUrl('cit_campus_hero.png', presentationData.heroImages.campus);
 
   return (
@@ -21,7 +21,7 @@ export const Scene02CollegeDept = ({ isActive }) => {
         className="lg:col-span-7 flex flex-col justify-center px-7 md:px-16 py-12 md:py-16 gap-8"
       >
         <SceneHeader
-          folio="02"
+          folio="03"
           kicker="The Institution"
           title={['Chennai Institute', 'of Technology']}
           accentLine={1}
