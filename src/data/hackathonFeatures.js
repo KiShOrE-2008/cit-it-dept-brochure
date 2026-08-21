@@ -1,37 +1,41 @@
 // Maps each hackathon photo in the Supabase `Image` storage bucket to the
 // `achievements` row it illustrates.
 //
-// `imageKey` MUST match the storage object name exactly. These four keys are
-// inferred and NOT yet verified against the bucket — anonymous listing requires
-// an API key, so they could not be confirmed at build time. If a photo does not
-// appear, list the bucket and correct `imageKey` here; nothing else needs to change.
+// `imageKey` must match the storage object name exactly. All four keys below
+// were verified against the live bucket: each returns HTTP 200 image/jpeg, and
+// `getPublicUrl` percent-encodes the spaces in the Mastra filename correctly.
+// Note the capital "H" — the objects are `Hackathon_*`, not `hackathon_*`.
 //
 // Matching prefers `achievementId` because two rows share the BuildFest name
 // (a 1st Prize and a 3rd Prize entry); `competition` is the documented fallback.
+//
+// `accent` must be one of the jewel inks the scene knows: brass, oxblood,
+// verdigris, sapphire. Each plate takes a different ink so the carousel
+// changes colour as it advances.
 export const hackathonFeatures = [
   {
-    imageKey: 'hackathon_buildfest.jpg',
+    imageKey: 'Hackathon_Buildfest.jpg',
     achievementId: 'ii-2',
     competition: "BuildFest '26",
-    accent: 'amber'
+    accent: 'brass'
   },
   {
-    imageKey: 'hackathon_sips.jpg',
+    imageKey: 'Hackathon_IIM.jpg',
     achievementId: 'iii-7',
     competition: 'Student Innovation & Product Summit (SIPS)',
-    accent: 'cyan'
+    accent: 'sapphire'
   },
   {
-    imageKey: 'hackathon_mastra.jpg',
+    imageKey: 'Hackathon_Mastra AI 2026.jpg',
     achievementId: 'iii-6',
     competition: 'HiDevs × Mastra Hackathon',
-    accent: 'emerald'
+    accent: 'verdigris'
   },
   {
-    imageKey: 'hackathon_moonshot.jpg',
+    imageKey: 'Hackathon_Moonshot.jpg',
     achievementId: 'ii-3',
     competition: 'Moonshot Hackathon 2026',
-    accent: 'purple'
+    accent: 'oxblood'
   }
 ];
 
