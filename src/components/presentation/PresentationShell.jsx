@@ -73,23 +73,25 @@ export const PresentationShell = () => {
   // Each scene holds a single screenful — nothing scrolls. The timer only
   // advances the clock; the frame cycle below turns that clock into an
   // in / hold / out choreography.
+  //
+  // The updater stays pure: advancing the deck from inside it made StrictMode's
+  // double-invocation fire `nextScene()` twice, which skipped a scene.
   useEffect(() => {
     if (!isPlaying) return;
 
     const intervalTime = 100; // update progress every 100ms
     const timer = setInterval(() => {
-      setElapsed((prev) => {
-        const nextTime = prev + intervalTime / 1000;
-        if (nextTime >= speed) {
-          nextScene();
-          return 0;
-        }
-        return nextTime;
-      });
+      setElapsed((prev) => prev + intervalTime / 1000);
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [isPlaying, speed, nextScene]);
+  }, [isPlaying]);
+
+  // Advance once the clock runs out. `nextScene` resets `elapsed`, so this
+  // fires exactly once per scene.
+  useEffect(() => {
+    if (isPlaying && elapsed >= speed) nextScene();
+  }, [isPlaying, elapsed, speed, nextScene]);
 
   // Keyboard navigation shortcuts
   useEffect(() => {
@@ -153,7 +155,7 @@ export const PresentationShell = () => {
       case 1: return <Scene02CollegeDept isActive={isFrameOpen} />;
       case 2: return <Scene03VisionMission isActive={isFrameOpen} />;
       case 3: return <Scene04AcademicToppers isActive={isFrameOpen} />;
-      case 4: return <Scene05Hackathons isActive={isFrameOpen} />;
+      case 4: return <Scene05Hackathons isActive={isFrameOpen} duration={speed} />;
       case 5: return <Scene06Events isActive={isFrameOpen} />;
       case 6: return <Scene07Placements isActive={isFrameOpen} />;
       case 7: return <Scene08DepartmentGlance isActive={isFrameOpen} />;

@@ -10,6 +10,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Chapter ink: oxblood. Each win is a plate in the record — the photograph
 // carries the moment, the facing column carries the citation.
+
+// Must match EXIT_LEAD_SECONDS in PresentationShell: the plates share the
+// scene's visible time, not its full duration.
+const EXIT_LEAD = 1.3;
+
 const INKS = {
   brass: { text: 'text-brass-bright', bg: 'bg-brass', border: 'border-brass', chip: 'bg-brass text-ink' },
   oxblood: { text: 'text-oxblood-bright', bg: 'bg-oxblood', border: 'border-oxblood', chip: 'bg-oxblood text-parchment' },
@@ -17,7 +22,7 @@ const INKS = {
   sapphire: { text: 'text-sapphire-bright', bg: 'bg-sapphire', border: 'border-sapphire', chip: 'bg-sapphire text-ink' }
 };
 
-export const Scene05Hackathons = ({ isActive }) => {
+export const Scene05Hackathons = ({ isActive, duration = 22 }) => {
   const [achievements, setAchievements] = useState(achievementsData);
   const [activeIdx, setActiveIdx] = useState(0);
 
@@ -37,13 +42,24 @@ export const Scene05Hackathons = ({ isActive }) => {
 
   const features = resolveHackathonFeatures(achievements);
 
+  // Divide the scene's own runtime between the plates instead of using a fixed
+  // 5s. At 22s a fixed interval left the last plate mid-view when the frame
+  // closed, which read as the fourth win being skipped. Advance stops on the
+  // last plate rather than wrapping back to the first.
+  const plateCount = features.length;
   useEffect(() => {
-    if (!isActive || features.length < 2) return;
+    if (!isActive || plateCount < 2) return;
+    const holdMs = Math.max(2000, ((duration - EXIT_LEAD) * 1000) / plateCount);
     const timer = setInterval(() => {
-      setActiveIdx((prev) => (prev + 1) % features.length);
-    }, 5000);
+      setActiveIdx((prev) => (prev + 1 < plateCount ? prev + 1 : prev));
+    }, holdMs);
     return () => clearInterval(timer);
-  }, [isActive, features.length]);
+  }, [isActive, plateCount, duration]);
+
+  // Restart at the first plate each time the scene opens.
+  useEffect(() => {
+    if (isActive) setActiveIdx(0);
+  }, [isActive]);
 
   if (!features.length) return null;
 
@@ -80,7 +96,7 @@ export const Scene05Hackathons = ({ isActive }) => {
         <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-stretch">
           {/* Plate */}
           <div className={`lg:col-span-7 relative overflow-hidden border-2 ${ink.border}`}>
-            <AnimatePresence mode="wait">
+            <AnimatePresence initial={false}>
               <motion.img
                 key={feature.imageKey}
                 src={imageUrl}
@@ -136,11 +152,16 @@ export const Scene05Hackathons = ({ isActive }) => {
                 transition={{ duration: 0.35 }}
                 className="flex flex-col gap-5 flex-1"
               >
-                <div className={`font-display font-extrabold text-4xl md:text-5xl leading-none ${ink.text}`}>
+                {/* Fixed blocks. Prize strings and descriptions vary in length
+                    across the four wins; without reserved height the citation
+                    shifted vertically every time the plate changed. */}
+                <div
+                  className={`font-display font-semibold text-3xl md:text-4xl leading-none min-h-[2.5rem] md:min-h-[3rem] flex items-end ${ink.text}`}
+                >
                   {row.prizeDisplay}
                 </div>
 
-                <p className="font-body font-medium text-parchment text-base md:text-lg leading-relaxed">
+                <p className="font-body text-parchment text-sm md:text-base leading-relaxed min-h-[4.5rem] md:min-h-[5rem]">
                   {row.shortDesc}
                 </p>
 

@@ -165,6 +165,15 @@ export const recruiterList = [
 // company's full name instead if one is confirmed.
 export const opaqueCompanyNames = ['MF'];
 
+// Hand corrections to the placed-student count, applied to the recruiter cards
+// only. The source sheet under-records Cisco: two students were placed, but
+// only one offer was entered. Fix the underlying record and delete the entry
+// here rather than letting this list grow.
+//
+// Note this deliberately does NOT change the headline "students placed" total,
+// which still counts actual rows.
+export const companyCountCorrections = { Cisco: 2 };
+
 export const getTopCompanies = (limit = 5, records = placementsData) => {
   const toNum = (pkg) =>
     typeof pkg === 'number' ? pkg : (parseInt(String(pkg || '').replace(/[^0-9]/g, ''), 10) || 0);
@@ -181,6 +190,11 @@ export const getTopCompanies = (limit = 5, records = placementsData) => {
 
   return [...byCompany.values()]
     .filter((c) => !opaqueCompanyNames.includes(c.company))
+    .map((c) =>
+      companyCountCorrections[c.company]
+        ? { ...c, count: companyCountCorrections[c.company] }
+        : c
+    )
     .sort(
       (a, b) =>
         (b.highest + b.count * 3) - (a.highest + a.count * 3) ||
