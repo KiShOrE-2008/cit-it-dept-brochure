@@ -8,7 +8,8 @@ export const supabase = supabaseUrl && supabaseAnonKey
   : null;
 
 // Helper to get public URL for images stored in Supabase Storage buckets
-export const getStorageImageUrl = (bucketName = 'presentation-assets', path) => {
+// Default bucket is 'Image' (matching the actual Supabase storage bucket)
+export const getStorageImageUrl = (bucketName = 'Image', path) => {
   if (!supabase || !path) return null;
   
   // If already a full http/https URL, return directly

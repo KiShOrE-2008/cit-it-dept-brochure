@@ -1,9 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
+import { getAssetImageUrl } from '../../services/dataService';
 import { Sparkles, Calendar, ArrowRight } from 'lucide-react';
 
 export const Scene01Welcome = ({ isActive, onStartClick }) => {
+  const logoImage = getAssetImageUrl('cit_logo.png', presentationData.heroImages.logo);
+
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center text-center px-6 overflow-hidden">
       {/* Background radial glow */}
@@ -19,7 +22,8 @@ export const Scene01Welcome = ({ isActive, onStartClick }) => {
         <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-cyan-500/30 to-amber-500/30 blur-xl opacity-75 group-hover:opacity-100 transition duration-1000 animate-pulse-glow" />
         <div className="relative w-36 h-36 md:w-44 md:h-44 p-3 rounded-3xl bg-slate-900/90 border border-cyan-500/30 backdrop-blur-2xl shadow-[0_0_50px_rgba(6,182,212,0.25)] flex items-center justify-center">
           <img
-            src={presentationData.heroImages.logo}
+            src={logoImage}
+            onError={(e) => { e.currentTarget.src = presentationData.heroImages.logo; }}
             alt="CIT IT Logo"
             className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]"
           />

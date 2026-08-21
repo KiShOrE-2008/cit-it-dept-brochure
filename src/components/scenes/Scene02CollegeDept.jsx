@@ -1,10 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
+import { getAssetImageUrl } from '../../services/dataService';
 import { GlassCard } from '../ui/GlassCard';
 import { Zap } from 'lucide-react';
 
 export const Scene02CollegeDept = ({ isActive }) => {
+  const campusImage = getAssetImageUrl('cit_campus_hero.png', presentationData.heroImages.campus);
+
   const domains = [
     "PROGRAMMING",
     "ALGORITHMS",
@@ -29,7 +32,8 @@ export const Scene02CollegeDept = ({ isActive }) => {
         className="absolute inset-0 z-0 pointer-events-none"
       >
         <img
-          src={presentationData.heroImages.campus}
+          src={campusImage}
+          onError={(e) => { e.currentTarget.src = presentationData.heroImages.campus; }}
           alt="CIT Campus"
           className="w-full h-full object-cover filter brightness-[0.22] contrast-[1.1]"
         />

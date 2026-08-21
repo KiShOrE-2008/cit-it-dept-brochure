@@ -37,7 +37,12 @@ export const PresentationShell = () => {
     "Hackathons & Competitions",
     "Events & Timeline",
     "Placements & Recruiters",
+    "Internships & Industry",
+    "International Conference",
+    "Faculty & Research",
+    "Infrastructure & CoEs",
     "Department at a Glance",
+    "Student Care & Support",
     "Thank You & Closing"
   ];
 
@@ -162,15 +167,20 @@ export const PresentationShell = () => {
   // Scene Component Switcher
   const renderSceneContent = (index) => {
     switch (index) {
-      case 0: return <Scene01Welcome isActive={true} onStartClick={() => { selectScene(1); setIsPlaying(true); }} />;
-      case 1: return <Scene02CollegeDept isActive={true} />;
-      case 2: return <Scene03VisionMission isActive={true} />;
-      case 3: return <Scene04Achievements isActive={true} />;
-      case 4: return <Scene05Hackathons isActive={true} />;
-      case 5: return <Scene06EventsTimeline isActive={true} />;
-      case 6: return <Scene07Placements isActive={true} />;
-      case 7: return <Scene12DepartmentGlance isActive={true} />;
-      case 8: return <Scene14ThankYou isActive={true} />;
+      case 0:  return <Scene01Welcome isActive={true} onStartClick={() => { selectScene(1); setIsPlaying(true); }} />;
+      case 1:  return <Scene02CollegeDept isActive={true} />;
+      case 2:  return <Scene03VisionMission isActive={true} />;
+      case 3:  return <Scene04Achievements isActive={true} />;
+      case 4:  return <Scene05Hackathons isActive={true} />;
+      case 5:  return <Scene06EventsTimeline isActive={true} />;
+      case 6:  return <Scene07Placements isActive={true} />;
+      case 7:  return <Scene08Internships isActive={true} />;
+      case 8:  return <Scene09Conference isActive={true} />;
+      case 9:  return <Scene10Faculty isActive={true} />;
+      case 10: return <Scene11Infrastructure isActive={true} />;
+      case 11: return <Scene12DepartmentGlance isActive={true} />;
+      case 12: return <Scene13StudentCare isActive={true} />;
+      case 13: return <Scene14ThankYou isActive={true} />;
       default: return null;
     }
   };

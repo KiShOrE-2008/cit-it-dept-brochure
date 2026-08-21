@@ -4,6 +4,7 @@ import { achievementsData, computeAchievementStats } from '../../data/achievemen
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 import { GlassCard } from '../ui/GlassCard';
 import { ReachMapVisual } from '../ui/ReachMapVisual';
+import { CinematicAchievementSpotlight } from '../ui/CinematicAchievementSpotlight';
 import { Trophy, Award, Flame, ExternalLink, Sparkles, MapPin, Calendar, CheckCircle2, ChevronRight, X, DollarSign, Layers } from 'lucide-react';
 
 export const Scene04Achievements = ({ isActive }) => {
@@ -88,6 +89,9 @@ export const Scene04Achievements = ({ isActive }) => {
           <div className="text-[11px] text-emerald-200/80 font-semibold">Gold, Silver & Bronze Wins</div>
         </GlassCard>
       </div>
+
+      {/* 3. CINEMATIC ACHIEVEMENT PHOTOGRAPH CAROUSEL */}
+      <CinematicAchievementSpotlight />
 
       {/* 3. MAIN TRANSITION STATEMENT LINE */}
       <div className="max-w-6xl mx-auto w-full my-4 relative flex items-center justify-between">

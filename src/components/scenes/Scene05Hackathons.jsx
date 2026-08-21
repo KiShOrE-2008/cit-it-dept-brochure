@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
+import { getAssetImageUrl } from '../../services/dataService';
 import { GlassCard } from '../ui/GlassCard';
-import { ChevronLeft, ChevronRight, Award, Zap, Code, Shield } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Award, Zap, Code } from 'lucide-react';
 
 export const Scene05Hackathons = ({ isActive }) => {
   const [activeIdx, setActiveIdx] = useState(0);
 
   const hackathons = presentationData.hackathonsList;
+  const hackathonImage = getAssetImageUrl('cit_hackathon_win.png', presentationData.heroImages.hackathon);
 
   const nextSlide = () => setActiveIdx((prev) => (prev + 1) % hackathons.length);
   const prevSlide = () => setActiveIdx((prev) => (prev - 1 + hackathons.length) % hackathons.length);
@@ -40,7 +42,8 @@ export const Scene05Hackathons = ({ isActive }) => {
           className="lg:col-span-6 relative rounded-2xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.2)] group"
         >
           <img
-            src={presentationData.heroImages.hackathon}
+            src={hackathonImage}
+            onError={(e) => { e.currentTarget.src = presentationData.heroImages.hackathon; }}
             alt="Hackathon Victory"
             className="w-full h-[340px] object-cover group-hover:scale-105 transition-transform duration-700"
           />
@@ -71,7 +74,7 @@ export const Scene05Hackathons = ({ isActive }) => {
               <GlassCard variant="cyan" className="p-8 space-y-5">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded border border-cyan-800">
-                    EVENT 0{activeIdx + 1} / 0{hackathons.length}
+                    EVENT {String(activeIdx + 1).padStart(2, '0')} / {String(hackathons.length).padStart(2, '0')}
                   </span>
                   <Award className="w-6 h-6 text-amber-400" />
                 </div>
