@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Atmosphere } from './Atmosphere';
 import { FolioSpine } from './FolioSpine';
 import { ControlDeck } from './ControlDeck';
+import { BackgroundAudio } from './BackgroundAudio';
 
 import { Scene01Welcome } from '../scenes/Scene01Welcome';
 import { Scene02Department } from '../scenes/Scene02Department';
@@ -175,6 +176,7 @@ export const PresentationShell = () => {
       className="relative w-screen h-screen overflow-hidden bg-ink select-none"
     >
       <Atmosphere />
+      <BackgroundAudio />
 
       <FolioSpine
         currentScene={currentScene}
