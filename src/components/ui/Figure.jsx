@@ -16,10 +16,10 @@ const tones = {
 };
 
 const sizes = {
-  sm: 'text-4xl md:text-5xl',
-  md: 'text-5xl md:text-6xl',
-  lg: 'text-6xl md:text-7xl',
-  xl: 'text-7xl md:text-8xl lg:text-9xl'
+  sm: 'text-2xl md:text-3xl',
+  md: 'text-3xl md:text-4xl',
+  lg: 'text-4xl md:text-5xl',
+  xl: 'text-5xl md:text-6xl lg:text-7xl'
 };
 
 export const Figure = ({
@@ -41,7 +41,7 @@ export const Figure = ({
   return (
     <motion.div variants={fadeUp} className={className}>
       <div
-        className={`font-display font-extrabold leading-[0.85] tabular-lining ${sizes[size]} ${
+        className={`font-display font-semibold leading-[0.9] tabular-lining ${sizes[size]} ${
           gilt ? 'gilt' : tones[tone] || tones.parchment
         }`}
       >
@@ -59,12 +59,12 @@ export const Figure = ({
       </div>
 
       {label && (
-        <div className="mt-3 font-mono text-xs md:text-sm font-bold tracking-[0.2em] uppercase text-parchment-dim">
+        <div className="mt-2 font-mono text-[10px] md:text-[11px] font-medium tracking-[0.18em] uppercase text-parchment-dim">
           {label}
         </div>
       )}
       {note && (
-        <div className="mt-1 font-body text-sm text-parchment-faint">{note}</div>
+        <div className="mt-1 font-body text-xs text-parchment-faint">{note}</div>
       )}
     </motion.div>
   );

@@ -3,26 +3,27 @@ import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
 import { stage, fadeUp } from '../../lib/motion';
 import { SceneHeader } from '../ui/SceneHeader';
-import { Panel } from '../ui/Panel';
 
-// Chapter ink: sapphire. Five events, each given its own ink so the page
-// reads as a programme of distinct occasions rather than a uniform grid.
-// Dates are real and ordered by the department's calendar, so they lead.
-const EVENT_INK = ['oxblood', 'sapphire', 'verdigris', 'brass', 'oxblood'];
+// Chapter ink: sapphire.
+// Set as a programme, not a card grid: five events cannot be five fat cards on
+// one screen, and a programme is what this content actually is. Date leads each
+// entry because the calendar is the organising fact; winners and speakers ride
+// on one line so a row stays a row.
+const ROW_INK = ['oxblood', 'sapphire', 'verdigris', 'brass', 'oxblood'];
 
-const INK_TEXT = {
-  brass: 'text-brass-bright',
-  oxblood: 'text-oxblood-bright',
-  verdigris: 'text-verdigris-bright',
-  sapphire: 'text-sapphire-bright'
+const INK = {
+  brass: { text: 'text-brass-bright', rule: 'bg-brass' },
+  oxblood: { text: 'text-oxblood-bright', rule: 'bg-oxblood' },
+  verdigris: { text: 'text-verdigris-bright', rule: 'bg-verdigris' },
+  sapphire: { text: 'text-sapphire-bright', rule: 'bg-sapphire' }
 };
 
 export const Scene06Events = ({ isActive }) => {
   const events = presentationData.events;
 
   return (
-    <div className="relative w-full min-h-full overflow-hidden">
-      <span className="folio-ghost absolute -top-[0.08em] right-2 md:right-10 text-[40vw] md:text-[24vw] text-sapphire/[0.08]">
+    <div className="relative w-full h-full overflow-hidden">
+      <span className="folio-ghost absolute -top-[0.06em] right-3 md:right-10 text-[34vw] md:text-[20vw] text-sapphire/[0.07]">
         06
       </span>
 
@@ -30,105 +31,69 @@ export const Scene06Events = ({ isActive }) => {
         variants={stage}
         initial="hidden"
         animate={isActive ? 'show' : 'hidden'}
-        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-8 max-w-7xl"
+        className="relative z-10 h-full flex flex-col justify-center px-7 md:px-16 py-8 gap-6 max-w-7xl"
       >
         <SceneHeader
           folio="06"
           kicker="Department Programme"
-          title={['Events &', 'Initiatives']}
-          accentLine={1}
+          title="Events & Initiatives"
           tone="sapphire"
-          lead={`${events.length} flagship events hosted this academic year.`}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="flex flex-col border-t border-line">
           {events.map((ev, idx) => {
-            const accent = EVENT_INK[idx % EVENT_INK.length];
-            const inkText = INK_TEXT[accent];
-            const isLast = idx === events.length - 1 && events.length % 2 === 1;
+            const ink = INK[ROW_INK[idx % ROW_INK.length]];
+            const people = ev.people?.map((p) => p.name).join(' · ');
+            const winners = ev.winners
+              ?.map((w) => `${w.medal} ${w.team}`)
+              .join('   ');
 
             return (
               <motion.div
                 key={ev.id}
                 variants={fadeUp}
-                className={isLast ? 'md:col-span-2' : ''}
+                className="grid grid-cols-[auto_1fr] md:grid-cols-[96px_1fr_auto] gap-x-5 gap-y-1 items-baseline py-3 border-b border-line"
               >
-                <Panel accent={accent} variant="wash" padding="p-5 md:p-6" className="h-full flex flex-col gap-4">
-                  {/* Date leads — this is a calendar */}
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <h3 className="font-display font-extrabold text-parchment text-xl md:text-2xl leading-[1.05]">
-                        {ev.name}
-                      </h3>
-                      <p className="font-body text-parchment-dim text-sm md:text-base mt-1 leading-snug">
-                        {ev.subtitle}
-                      </p>
-                    </div>
-                    <span className={`shrink-0 font-mono text-sm md:text-base font-bold tracking-[0.1em] tabular-lining ${inkText}`}>
-                      {ev.dateShort}
-                    </span>
-                  </div>
+                {/* Date */}
+                <div className="flex items-baseline gap-2.5">
+                  <span className={`h-[3px] w-4 shrink-0 translate-y-[-4px] ${ink.rule}`} />
+                  <span className={`font-mono text-[11px] font-semibold tracking-[0.08em] tabular-lining whitespace-nowrap ${ink.text}`}>
+                    {ev.dateShort}
+                  </span>
+                </div>
 
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase ${inkText}`}>
-                      {ev.category}
-                    </span>
-                    <span className="text-parchment-faint select-none">·</span>
-                    <span className="font-mono text-[11px] font-semibold tracking-[0.12em] uppercase text-parchment-dim">
-                      {ev.highlight}
-                    </span>
-                  </div>
-
-                  <p className="font-body font-medium text-parchment text-sm md:text-base leading-relaxed">
-                    {ev.desc}
+                {/* Event */}
+                <div className="min-w-0">
+                  <h3 className="font-display font-semibold text-parchment text-base md:text-lg leading-tight">
+                    {ev.name}
+                  </h3>
+                  <p className="font-body text-parchment-dim text-xs md:text-sm leading-snug">
+                    {ev.subtitle}
                   </p>
 
-                  {ev.meta && (
-                    <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-parchment-faint">
-                      {ev.meta}
+                  {(winners || people) && (
+                    <p className="font-body text-parchment text-xs md:text-sm mt-1 truncate">
+                      {winners ? (
+                        <span>{winners}</span>
+                      ) : (
+                        <>
+                          <span className="text-parchment-faint">Speaker&nbsp;</span>
+                          {people}
+                        </>
+                      )}
                     </p>
                   )}
+                </div>
 
-                  {ev.winners && (
-                    <div className="mt-auto pt-1">
-                      <div className="font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-parchment-faint pb-1">
-                        Winners
-                      </div>
-                      {ev.winners.map((w) => (
-                        <div
-                          key={w.team}
-                          className="flex items-baseline gap-3 py-1.5 border-t border-line"
-                        >
-                          <span className="text-base shrink-0 leading-none">{w.medal}</span>
-                          <span className="font-body font-bold text-parchment text-sm md:text-base shrink-0">
-                            {w.team}
-                          </span>
-                          <span className="font-body text-parchment-dim text-xs md:text-sm truncate">
-                            {w.project}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {ev.people && (
-                    <div className="mt-auto pt-1">
-                      <div className="font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-parchment-faint pb-1">
-                        Resource {ev.people.length > 1 ? 'Persons' : 'Person'}
-                      </div>
-                      {ev.people.map((p) => (
-                        <div key={p.name} className="py-1.5 border-t border-line">
-                          <div className="font-body font-bold text-parchment text-sm md:text-base">
-                            {p.name}
-                          </div>
-                          <div className="font-body text-parchment-dim text-xs leading-snug">
-                            {p.role}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </Panel>
+                {/* Category */}
+                <div className="col-span-2 md:col-span-1 md:text-right">
+                  <div className={`font-mono text-[10px] font-semibold tracking-[0.18em] uppercase ${ink.text}`}>
+                    {ev.category}
+                  </div>
+                  <div className="font-mono text-[10px] tracking-[0.1em] uppercase text-parchment-faint">
+                    {ev.highlight}
+                  </div>
+                </div>
               </motion.div>
             );
           })}

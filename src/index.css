@@ -44,6 +44,8 @@
   --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
   --font-body: "Source Serif 4", Cambria, Georgia, serif;
   --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+  /* The college name is set in the condensed grotesque of the official CIT mark */
+  --font-institution: "Archivo Narrow", "Arial Narrow", "Helvetica Neue", sans-serif;
 }
 
 @layer base {
@@ -54,11 +56,11 @@
     background-color: var(--color-ink);
     color: var(--color-parchment);
   }
-  /* Display type is set heavy. A convocation headline should read as a
-     proclamation, not a caption. */
+  /* Display type carries weight without shouting — the record should read
+     as considered, not as a poster. */
   h1, h2, h3, h4, h5, h6, .font-heading {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
   }
   ::selection {
     background: var(--color-brass);
@@ -160,7 +162,7 @@
 /* Oversized chapter numeral bled off the page edge, used once per scene. */
 .folio-ghost {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 0.72;
   user-select: none;
   pointer-events: none;

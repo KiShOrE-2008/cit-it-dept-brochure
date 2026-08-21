@@ -7,7 +7,7 @@ export const presentationData = {
   meetingSubtitle: "A Cinematic Journey of Academic Excellence, Innovation & Career Success",
   
   heroImages: {
-    logo: "/assets/cit_logo.png",
+    logo: "/assets/cit_badge.png",
     campus: "/assets/cit_campus_hero.png",
     hackathon: "/assets/cit_hackathon_win.png",
     lab: "/assets/cit_lab_hero.png"

@@ -14,9 +14,23 @@ import { Scene06Events } from '../scenes/Scene06Events';
 import { Scene07Placements } from '../scenes/Scene07Placements';
 import { Scene08DepartmentGlance } from '../scenes/Scene08DepartmentGlance';
 
+// Open the deck on a specific scene with `?scene=4`, and hold it there with
+// `?scene=4&paused=1`. Useful for rehearsing one slide without sitting through
+// the deck, and for capturing a scene in a screenshot.
+const readSceneParam = () => {
+  if (typeof window === 'undefined') return { scene: 0, paused: false };
+  const params = new URLSearchParams(window.location.search);
+  const raw = parseInt(params.get('scene'), 10);
+  return {
+    scene: Number.isFinite(raw) && raw > 0 ? raw - 1 : 0,
+    paused: params.get('paused') === '1'
+  };
+};
+
 export const PresentationShell = () => {
-  const [currentScene, setCurrentScene] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const initial = readSceneParam();
+  const [currentScene, setCurrentScene] = useState(initial.scene);
+  const [isPlaying, setIsPlaying] = useState(!initial.paused);
   const [speed, setSpeed] = useState(22); // Increased default time to 22s for comfortable viewing
   const [elapsed, setElapsed] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -36,6 +50,11 @@ export const PresentationShell = () => {
 
   const totalScenes = sceneTitles.length;
 
+  // Clamp a hand-typed ?scene= that points past the end of the deck.
+  useEffect(() => {
+    if (currentScene > totalScenes - 1) setCurrentScene(0);
+  }, [currentScene, totalScenes]);
+
   const nextScene = useCallback(() => {
     setCurrentScene((prev) => (prev < totalScenes - 1 ? prev + 1 : 0));
     setElapsed(0);
@@ -51,7 +70,9 @@ export const PresentationShell = () => {
     setElapsed(0);
   };
 
-  // Timer loop for auto-playing presentation scenes with automated slow scroll down
+  // Each scene holds a single screenful — nothing scrolls. The timer only
+  // advances the clock; the frame cycle below turns that clock into an
+  // in / hold / out choreography.
   useEffect(() => {
     if (!isPlaying) return;
 
@@ -59,18 +80,6 @@ export const PresentationShell = () => {
     const timer = setInterval(() => {
       setElapsed((prev) => {
         const nextTime = prev + intervalTime / 1000;
-        
-        // Automated slow auto-scroll down inside active scene container
-        const container = sceneContainerRef.current;
-        if (container) {
-          const maxScroll = container.scrollHeight - container.clientHeight;
-          if (maxScroll > 10) {
-            // Smoothly scroll down as elapsed time progresses
-            const scrollRatio = Math.min(nextTime / (speed * 0.85), 1);
-            container.scrollTop = maxScroll * scrollRatio;
-          }
-        }
-
         if (nextTime >= speed) {
           nextScene();
           return 0;
@@ -103,31 +112,9 @@ export const PresentationShell = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextScene, prevScene]);
 
-  // Intelligent Wheel Scroll: ONLY flip scenes when user reaches the top or bottom of the scroll container
+  // Scenes no longer scroll, so the wheel is purely a navigation gesture.
   const lastScrollTime = useRef(0);
   const handleWheel = (e) => {
-    const container = sceneContainerRef.current;
-    
-    if (container) {
-      const isScrollable = container.scrollHeight > container.clientHeight + 10;
-
-      if (isScrollable) {
-        const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 25;
-        const isAtTop = container.scrollTop <= 15;
-
-        // If user is scrolling down and NOT at bottom, let container scroll naturally
-        if (e.deltaY > 0 && !isAtBottom) {
-          return; // Allow native scroll down
-        }
-
-        // If user is scrolling up and NOT at top, let container scroll naturally
-        if (e.deltaY < 0 && !isAtTop) {
-          return; // Allow native scroll up
-        }
-      }
-    }
-
-    // Otherwise, trigger slide navigation with 700ms throttle
     const now = Date.now();
     if (now - lastScrollTime.current < 700) return;
 
@@ -152,17 +139,24 @@ export const PresentationShell = () => {
 
   const progressPct = Math.min((elapsed / speed) * 100, 100);
 
+  // The frame cycle. Content staggers in, holds for most of the scene, then
+  // staggers back out shortly before the deck advances — so a switch reads as
+  // one frame closing and the next opening, rather than a hard cut. Scenes
+  // receive this as `isActive`, the same flag that already gates their motion.
+  const EXIT_LEAD_SECONDS = 1.3;
+  const isFrameOpen = !isPlaying || elapsed < speed - EXIT_LEAD_SECONDS;
+
   // Scene Component Switcher
   const renderSceneContent = (index) => {
     switch (index) {
-      case 0: return <Scene01Welcome isActive={true} onStartClick={() => { selectScene(1); setIsPlaying(true); }} />;
-      case 1: return <Scene02CollegeDept isActive={true} />;
-      case 2: return <Scene03VisionMission isActive={true} />;
-      case 3: return <Scene04AcademicToppers isActive={true} />;
-      case 4: return <Scene05Hackathons isActive={true} />;
-      case 5: return <Scene06Events isActive={true} />;
-      case 6: return <Scene07Placements isActive={true} />;
-      case 7: return <Scene08DepartmentGlance isActive={true} />;
+      case 0: return <Scene01Welcome isActive={isFrameOpen} onStartClick={() => { selectScene(1); setIsPlaying(true); }} />;
+      case 1: return <Scene02CollegeDept isActive={isFrameOpen} />;
+      case 2: return <Scene03VisionMission isActive={isFrameOpen} />;
+      case 3: return <Scene04AcademicToppers isActive={isFrameOpen} />;
+      case 4: return <Scene05Hackathons isActive={isFrameOpen} />;
+      case 5: return <Scene06Events isActive={isFrameOpen} />;
+      case 6: return <Scene07Placements isActive={isFrameOpen} />;
+      case 7: return <Scene08DepartmentGlance isActive={isFrameOpen} />;
       default: return null;
     }
   };
@@ -181,19 +175,19 @@ export const PresentationShell = () => {
         progressPct={progressPct}
       />
 
-      {/* Main scene viewport — a leaf being turned, not a slide sliding in.
-          The ref and the scroll container stay on this node: the shell's timer
-          drives `scrollTop` here, and `handleWheel` reads its bounds. */}
-      <main className="relative w-full h-full z-10 pl-0 md:pl-24 pt-12 md:pt-0 pb-24">
+      {/* Main scene viewport — one screenful per scene, no scrolling.
+          The frame itself lifts away as the deck advances; the staggered
+          in/out of the content inside is driven by `isFrameOpen`. */}
+      <main className="relative w-full h-full z-10 pl-0 md:pl-24 pt-12 md:pt-0 pb-20 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScene}
             ref={sceneContainerRef}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth"
+            initial={{ opacity: 0, y: 14, scale: 0.995 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -14, scale: 0.995 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full h-full overflow-hidden"
           >
             {renderSceneContent(currentScene)}
           </motion.div>

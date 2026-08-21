@@ -30,7 +30,7 @@ export const Scene03VisionMission = ({ isActive }) => {
         variants={stage}
         initial="hidden"
         animate={isActive ? 'show' : 'hidden'}
-        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-9 max-w-6xl"
+        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-8 gap-6 max-w-6xl"
       >
         <SceneHeader folio="03" kicker="What We Stand For" title="Vision & Mission" tone="verdigris" />
 
@@ -40,14 +40,14 @@ export const Scene03VisionMission = ({ isActive }) => {
             variants={drawRuleV}
             className="absolute left-0 top-0 bottom-0 w-[5px] origin-top gilt-bar"
           />
-          <p className="font-display font-bold text-parchment text-xl md:text-3xl lg:text-[2rem] leading-[1.3]">
+          <p className="font-display font-bold text-parchment text-base md:text-xl lg:text-2xl leading-[1.35]">
             {quote}
           </p>
         </motion.blockquote>
 
         {/* The five mission statements */}
         <motion.div variants={fadeUp} className="flex flex-col max-w-5xl">
-          <div className="font-mono text-sm font-bold tracking-[0.22em] uppercase text-verdigris-bright pb-3">
+          <div className="font-mono text-sm font-bold tracking-[0.22em] uppercase text-verdigris-bright pb-2">
             Our Mission
           </div>
 
@@ -55,15 +55,15 @@ export const Scene03VisionMission = ({ isActive }) => {
             <motion.div
               key={item.id}
               variants={fadeUp}
-              className="flex gap-4 md:gap-5 items-start py-4 border-t border-line last:border-b"
+              className="flex gap-4 md:gap-5 items-start py-2.5 border-t border-line last:border-b"
             >
               <span
-                className={`shrink-0 font-display font-extrabold text-3xl md:text-4xl tabular-lining leading-none ${MISSION_INKS[idx]}`}
+                className={`shrink-0 font-display font-extrabold text-xl md:text-2xl tabular-lining leading-none ${MISSION_INKS[idx]}`}
               >
                 {item.id}
               </span>
-              <span className={`shrink-0 mt-3 hidden md:block h-[3px] w-10 ${MISSION_RULES[idx]}`} />
-              <p className="font-body font-medium text-parchment text-base md:text-lg leading-relaxed">
+              <span className={`shrink-0 mt-2 hidden md:block h-[2px] w-8 ${MISSION_RULES[idx]}`} />
+              <p className="font-body font-medium text-parchment text-xs md:text-sm leading-relaxed">
                 {item.text}
               </p>
             </motion.div>

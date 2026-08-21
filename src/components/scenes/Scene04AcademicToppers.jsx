@@ -25,7 +25,7 @@ const YearColumn = ({ group }) => {
       {/* Year masthead */}
       <div className="flex items-baseline justify-between border-b-2 border-line-bright pb-2 mb-1">
         <div>
-          <h3 className="font-display font-extrabold text-2xl md:text-3xl text-parchment leading-none">
+          <h3 className="font-display font-extrabold text-lg md:text-xl text-parchment leading-none">
             {group.label}
           </h3>
           <p className="font-mono text-[11px] font-bold tracking-[0.2em] uppercase text-brass-bright mt-1.5">
@@ -45,13 +45,13 @@ const YearColumn = ({ group }) => {
           <motion.div
             key={pos.position}
             variants={fadeUp}
-            className={`flex gap-4 items-start border-b border-line ${isPodium ? 'py-3.5' : 'py-2.5'}`}
+            className={`flex gap-4 items-start border-b border-line ${isPodium ? 'py-2' : 'py-1.5'}`}
           >
             {/* Position numeral */}
             <div className="shrink-0 w-9 flex flex-col items-center gap-1.5 pt-0.5">
               <span
                 className={`font-display font-extrabold tabular-lining leading-none ${
-                  isPodium ? 'text-3xl md:text-4xl' : 'text-xl md:text-2xl'
+                  isPodium ? 'text-xl md:text-2xl' : 'text-base md:text-lg'
                 } ${ink.num}`}
               >
                 {pos.position}
@@ -65,7 +65,7 @@ const YearColumn = ({ group }) => {
                 <div key={s.regNo} className="flex items-baseline gap-2 leading-snug">
                   <span
                     className={`font-body font-semibold text-parchment ${
-                      isPodium ? 'text-base md:text-lg' : 'text-sm md:text-base'
+                      isPodium ? 'text-sm md:text-base' : 'text-xs md:text-sm'
                     }`}
                   >
                     {s.name}
@@ -75,17 +75,12 @@ const YearColumn = ({ group }) => {
                   </span>
                 </div>
               ))}
-              {pos.students.length > 1 && (
-                <span className="font-mono text-[10px] font-semibold tracking-[0.14em] uppercase text-parchment-faint">
-                  {pos.students.length} tied
-                </span>
-              )}
-            </div>
+                          </div>
 
             {/* GPA */}
             <span
               className={`shrink-0 font-display font-extrabold tabular-lining leading-none ${
-                isPodium ? 'text-2xl md:text-3xl' : 'text-lg md:text-xl'
+                isPodium ? 'text-lg md:text-xl' : 'text-sm md:text-base'
               } ${ink.gpa}`}
             >
               {pos.gpa.toFixed(2)}
@@ -114,7 +109,7 @@ export const Scene04AcademicToppers = ({ isActive }) => {
         variants={stage}
         initial="hidden"
         animate={isActive ? 'show' : 'hidden'}
-        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-9"
+        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-8 gap-6"
       >
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           <SceneHeader
@@ -137,7 +132,7 @@ export const Scene04AcademicToppers = ({ isActive }) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-10 gap-y-10 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6 max-w-7xl">
           {academicToppers.map((group) => (
             <YearColumn key={group.year} group={group} />
           ))}

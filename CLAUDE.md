@@ -37,8 +37,8 @@ The script prefers `SUPABASE_SERVICE_ROLE_KEY`, falling back to `VITE_SUPABASE_A
 [PresentationShell.jsx](src/components/presentation/PresentationShell.jsx) is the single orchestrator. [App.jsx](src/App.jsx) just mounts it. It holds all presentation state (`currentScene`, `isPlaying`, `speed`, `elapsed`, `isFullscreen`) and implements:
 
 - **Autoplay timer** — a 100ms interval accumulates `elapsed`; at `speed` seconds (default 22) it advances and wraps from the last scene back to 0.
-- **Auto-scroll** — the *same* timer writes `container.scrollTop` directly, easing the active scene's scroll container to the bottom over `speed * 0.85` seconds. Scenes taller than the viewport are meant to reveal themselves this way.
-- **Boundary-aware wheel navigation** — `handleWheel` lets the scene scroll natively until it hits top/bottom, only then flipping scenes, throttled to 700ms. Don't add competing scroll handlers inside scenes.
+- **The frame cycle** — `isFrameOpen` goes false `EXIT_LEAD_SECONDS` (1.3s) before the scene ends and is passed to every scene as `isActive`. Content staggers in, holds, then staggers back out before the switch. **Nothing scrolls** — each scene is exactly one screenful, and the viewport is `overflow-hidden`. If a scene grows past the frame it is silently clipped, so re-measure after adding content (see *Checking fit* below).
+- **Wheel navigation** — purely a scene-flip gesture now, throttled to 700ms.
 - **Keyboard** — Space toggles play, arrows navigate, `f` toggles fullscreen.
 - **Transitions** — `AnimatePresence mode="wait"` keyed on `currentScene`, with an opacity/scale/blur cinematic wipe.
 
@@ -63,6 +63,16 @@ Current deck — 8 scenes, filenames aligned to deck order:
 | 6 | `Scene06Events` | `presentationData.events` |
 | 7 | `Scene07Placements` | Supabase `placements` |
 | 8 | `Scene08DepartmentGlance` | `presentationData.departmentGlance` |
+
+### Checking fit
+
+Because nothing scrolls, a scene that outgrows the viewport is clipped with no visible warning. To check, serve the build and measure each scene against the frame:
+
+```bash
+npm run build && npm run preview -- --port 5300
+```
+
+Open a single scene directly with `?scene=4`, and freeze it with `?scene=4&paused=1` — handy for rehearsing one slide, and required for screenshotting since the deck otherwise advances. Drive a Chromium browser over CDP with a **real** wait (2–3s): framer-motion's entrance animation does not complete under `--virtual-time-budget`, so screenshots taken that way show half-faded content. Compare each scene's deepest `getBoundingClientRect().bottom` against the frame's bottom; anything greater is clipped.
 
 ### Scene contract
 
@@ -92,7 +102,7 @@ Derived numbers come from `compute*()` helpers called at render time, never from
 - **Column layouts differ.** II/III: GPA `[17]`, credits `[15]`, full load 23. IV: GPA `[14]`, credits `[12]`, full load 16.
 - **Filter to full-credit students before ranking.** Without it the IV IT sheet ranks students who completed only 5 of 16 credits (GPA 10.00) above everyone else. This drops IV IT from 123 rows to 60.
 - The `CGPA` column reads `62` on every row in all sheets — an artifact, not data. Only semester GPA is usable. IV IT's `P/F` column reads `F` for all 123 rows and is likewise unusable.
-- Ranking is GPA desc, tie-break by register number, cut at top 5. **Ties land on the rank-5 boundary in all three years**, so four students with GPAs identical to a listed topper are currently excluded — see the plan file for names if this needs revisiting.
+- Output is grouped by **position, not flattened**, because ties are common and every student sharing a GPA must print against the same numeral. `positionsFor(group, minStudents)` takes whole positions until it has at least `minStudents` names, so a tie is never split — currently 11 / 10 / 15 students across the three years. Ranking by 10 *positions* instead would yield 21 / 19 / 46, which does not fit one screen.
 
 ### Supabase
 

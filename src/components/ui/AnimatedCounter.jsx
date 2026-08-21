@@ -1,39 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-export const AnimatedCounter = ({ end, duration = 2000, suffix = '', prefix = '', decimals = 0, isActive = true }) => {
+// Counts up from zero whenever the scene opens. When the scene closes it
+// HOLDS its final value rather than resetting — the frame is fading out at
+// that moment, and a figure snapping back to zero mid-fade is visible.
+export const AnimatedCounter = ({
+  end,
+  duration = 1600,
+  suffix = '',
+  prefix = '',
+  decimals = 0,
+  isActive = true
+}) => {
   const [count, setCount] = useState(0);
+  const frameRef = useRef(0);
 
   useEffect(() => {
-    if (!isActive) {
-      setCount(0);
-      return;
-    }
+    if (!isActive) return;
 
-    let startTimestamp = null;
-    const numericEnd = parseFloat(end);
+    const target = parseFloat(end);
+    if (Number.isNaN(target)) return;
 
+    let start = null;
     const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      // Ease out quad formula for smooth decelerating animation
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-      
-      const currentCount = easedProgress * numericEnd;
-      setCount(currentCount);
-
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
+      if (start === null) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(eased * target);
+      if (progress < 1) frameRef.current = window.requestAnimationFrame(step);
     };
 
-    window.requestAnimationFrame(step);
+    frameRef.current = window.requestAnimationFrame(step);
+    return () => window.cancelAnimationFrame(frameRef.current);
   }, [end, duration, isActive]);
 
-  const formattedValue = decimals > 0 ? count.toFixed(decimals) : Math.floor(count);
+  const shown = decimals > 0 ? count.toFixed(decimals) : Math.floor(count);
 
   return (
     <span className="inline-block font-display tabular-lining tracking-tight">
-      {prefix}{formattedValue}{suffix}
+      {prefix}
+      {shown}
+      {suffix}
     </span>
   );
 };

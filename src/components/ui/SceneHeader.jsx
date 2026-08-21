@@ -29,8 +29,8 @@ export const SceneHeader = ({
   const t = tones[tone] || tones.brass;
   const titleSize =
     size === 'xl'
-      ? 'text-5xl md:text-7xl lg:text-8xl'
-      : 'text-4xl md:text-6xl lg:text-[4.25rem]';
+      ? 'text-4xl md:text-5xl lg:text-6xl'
+      : 'text-3xl md:text-4xl lg:text-5xl';
 
   return (
     <motion.div
@@ -39,17 +39,17 @@ export const SceneHeader = ({
     >
       <motion.div variants={fadeUp} className="flex items-center gap-3">
         {folio && (
-          <span className="font-mono text-sm font-semibold tracking-[0.25em] text-parchment-faint tabular-lining">
+          <span className="font-mono text-[11px] font-medium tracking-[0.25em] text-parchment-faint tabular-lining">
             {folio}
           </span>
         )}
-        <motion.span variants={drawRule} className={`h-[4px] w-12 origin-left ${t.rule}`} />
-        <span className={`font-mono text-sm md:text-base tracking-[0.24em] uppercase font-bold ${t.kicker}`}>
+        <motion.span variants={drawRule} className={`h-[3px] w-10 origin-left ${t.rule}`} />
+        <span className={`font-mono text-[11px] md:text-xs tracking-[0.24em] uppercase font-semibold ${t.kicker}`}>
           {kicker}
         </span>
       </motion.div>
 
-      <h2 className={`font-display font-extrabold text-parchment leading-[0.92] ${titleSize}`}>
+      <h2 className={`font-display font-semibold text-parchment leading-[1.02] tracking-[-0.01em] ${titleSize}`}>
         {lines.map((line, i) => (
           <MaskReveal key={i} as="span" className="block">
             <span className={i === accentLine ? t.accent : undefined}>{line}</span>
@@ -60,7 +60,7 @@ export const SceneHeader = ({
       {lead && (
         <motion.p
           variants={fadeUp}
-          className={`font-body font-medium text-parchment text-lg md:text-xl leading-relaxed ${
+          className={`font-body text-parchment-dim text-sm md:text-base leading-relaxed ${
             isCenter ? 'max-w-2xl' : 'max-w-2xl'
           }`}
         >

@@ -13,7 +13,7 @@ export const FolioSpine = ({ currentScene, totalScenes, sceneTitle, progressPct 
       {/* Desktop: full vertical spine */}
       <div className="hidden md:flex fixed inset-y-0 left-0 z-40 w-24 flex-col items-center justify-between py-8 border-r border-line bg-ink-raised/90">
         <div className="flex flex-col items-center gap-3">
-          <img src={presentationData.heroImages.logo} alt="CIT" className="w-9 h-9 object-contain" />
+          <img src={presentationData.heroImages.logo} alt="CIT" className="w-10 h-auto rounded-[4px]" />
           <span className="font-mono text-xs tracking-[0.25em] text-parchment-dim [writing-mode:vertical-rl]">
             CIT · DEPT OF IT
           </span>
