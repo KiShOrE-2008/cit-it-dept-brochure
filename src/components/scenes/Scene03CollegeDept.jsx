@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
-import { getAssetImageUrl } from '../../services/dataService';
 import { stage, fadeUp } from '../../lib/motion';
 import { SceneHeader } from '../ui/SceneHeader';
 import { LedgerRow } from '../ui/LedgerRow';
@@ -9,7 +8,7 @@ import { LedgerRow } from '../ui/LedgerRow';
 // Chapter ink: sapphire. Institution on the left as a record, the campus
 // on the right as a plate — the two halves of a dossier spread.
 export const Scene03CollegeDept = ({ isActive }) => {
-  const campusImage = getAssetImageUrl('cit_campus_hero.png', presentationData.heroImages.campus);
+  const campusImage = presentationData.heroImages.campus;
 
   return (
     <div className="relative w-full min-h-full grid grid-cols-1 lg:grid-cols-12">
@@ -48,14 +47,11 @@ export const Scene03CollegeDept = ({ isActive }) => {
       <div className="lg:col-span-5 relative overflow-hidden border-t-2 lg:border-t-0 lg:border-l-2 border-line-bright min-h-[38vh] lg:min-h-0">
         <img
           src={campusImage}
-          onError={(e) => {
-            e.currentTarget.src = presentationData.heroImages.campus;
-          }}
-          alt="CIT campus"
+          alt="Chennai Institute of Technology Campus Aerial View"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: 'grayscale(0.35) brightness(0.5) contrast(1.1) sepia(0.18)' }}
+          style={{ filter: 'brightness(0.82) contrast(1.05)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/10" />
 
         <motion.div
           variants={stage}

@@ -36,6 +36,8 @@ export const PresentationShell = () => {
   const [speed, setSpeed] = useState(22); // Increased default time to 22s for comfortable viewing
   const [elapsed, setElapsed] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [audioVolume, setAudioVolume] = useState(0.3);
 
   const sceneContainerRef = useRef(null);
 
@@ -113,6 +115,8 @@ export const PresentationShell = () => {
         prevScene();
       } else if (e.key === 'f' || e.key === 'F') {
         toggleFullscreen();
+      } else if (e.key === 'm' || e.key === 'M') {
+        setIsMuted((prev) => !prev);
       }
     };
 
@@ -176,7 +180,7 @@ export const PresentationShell = () => {
       className="relative w-screen h-screen overflow-hidden bg-ink select-none"
     >
       <Atmosphere />
-      <BackgroundAudio />
+      <BackgroundAudio volume={audioVolume} isMuted={isMuted} />
 
       <FolioSpine
         currentScene={currentScene}
@@ -218,6 +222,15 @@ export const PresentationShell = () => {
         isFullscreen={isFullscreen}
         speed={speed}
         onChangeSpeed={(newSpeed) => { setSpeed(newSpeed); setElapsed(0); }}
+        isMuted={isMuted}
+        onToggleMute={() => setIsMuted((prev) => !prev)}
+        volume={audioVolume}
+        onChangeVolume={(v) => {
+          setAudioVolume(v);
+          if (v > 0 && isMuted) {
+            setIsMuted(false);
+          }
+        }}
       />
     </div>
   );

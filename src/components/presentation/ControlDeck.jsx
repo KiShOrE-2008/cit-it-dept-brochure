@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Volume2, Volume1, VolumeX } from 'lucide-react';
 
 export const ControlDeck = ({
   currentScene,
@@ -12,16 +13,26 @@ export const ControlDeck = ({
   onToggleFullscreen,
   isFullscreen,
   speed,
-  onChangeSpeed
+  onChangeSpeed,
+  isMuted = false,
+  onToggleMute,
+  volume = 0.3,
+  onChangeVolume
 }) => {
   const [showJumpMenu, setShowJumpMenu] = useState(false);
+  const [showAudioMenu, setShowAudioMenu] = useState(false);
+
+  const effectiveVolume = isMuted ? 0 : volume;
 
   return (
     <div className="fixed bottom-5 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-6 z-40 flex items-center gap-1 px-2 py-2 bg-ink-raised/95 border border-line">
       {/* Scene index */}
       <div className="relative">
         <button
-          onClick={() => setShowJumpMenu(!showJumpMenu)}
+          onClick={() => {
+            setShowJumpMenu(!showJumpMenu);
+            setShowAudioMenu(false);
+          }}
           className="flex items-center gap-2 px-3 py-2 text-parchment-dim hover:text-brass transition-colors font-mono text-sm"
           title="Jump to Scene (Key: J)"
         >
@@ -118,6 +129,88 @@ export const ControlDeck = ({
             {s.label}
           </button>
         ))}
+      </div>
+
+      <div className="h-4 w-px bg-line" />
+
+      {/* Audio Mute & Volume Control Deck Item */}
+      <div className="relative">
+        <button
+          onClick={() => {
+            setShowAudioMenu(!showAudioMenu);
+            setShowJumpMenu(false);
+          }}
+          className={`p-2.5 transition-colors flex items-center gap-1 ${
+            isMuted || effectiveVolume === 0
+              ? 'text-red-400 hover:text-red-300'
+              : 'text-parchment-dim hover:text-brass'
+          }`}
+          title="Audio Controls (Key: M to Mute/Unmute)"
+        >
+          {isMuted || effectiveVolume === 0 ? (
+            <VolumeX className="w-4 h-4" />
+          ) : effectiveVolume > 0.5 ? (
+            <Volume2 className="w-4 h-4 text-brass" />
+          ) : (
+            <Volume1 className="w-4 h-4 text-brass" />
+          )}
+        </button>
+
+        {showAudioMenu && (
+          <div className="absolute bottom-14 right-0 w-64 p-4 bg-ink-raised border border-line shadow-2xl z-50 space-y-3 font-mono text-xs">
+            <div className="flex items-center justify-between border-b border-line pb-2">
+              <span className="text-parchment-faint tracking-[0.15em] uppercase font-bold">
+                Background Music
+              </span>
+              <span className={`font-bold ${isMuted ? 'text-red-400' : 'text-brass'}`}>
+                {isMuted ? 'MUTED' : `${Math.round(volume * 100)}%`}
+              </span>
+            </div>
+
+            {/* Mute/Unmute Toggle Button */}
+            <button
+              onClick={onToggleMute}
+              className={`w-full py-2 px-3 rounded flex items-center justify-center gap-2 border font-bold tracking-wider transition-all ${
+                isMuted
+                  ? 'bg-red-500/20 border-red-500/40 text-red-300 hover:bg-red-500/30'
+                  : 'bg-brass/20 border-brass/40 text-brass hover:bg-brass/30'
+              }`}
+            >
+              {isMuted ? (
+                <>
+                  <VolumeX className="w-3.5 h-3.5" />
+                  <span>UNMUTE MUSIC</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="w-3.5 h-3.5" />
+                  <span>MUTE MUSIC</span>
+                </>
+              )}
+            </button>
+
+            {/* Volume Adjustment Slider */}
+            <div className="space-y-1 pt-1">
+              <div className="flex justify-between text-[10px] text-parchment-faint">
+                <span>0%</span>
+                <span>VOLUME LEVEL</span>
+                <span>100%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={effectiveVolume}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  onChangeVolume(val);
+                }}
+                className="w-full h-1.5 bg-ink rounded-lg appearance-none cursor-pointer accent-brass"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="hidden sm:block h-4 w-px bg-line" />

@@ -45,13 +45,18 @@ export const Scene08Placements = ({ isActive }) => {
   const totalRecruiters = new Set(records.map((r) => r.company).filter(Boolean)).size;
   const highest = records.reduce((max, r) => Math.max(max, toNum(r.package)), 0);
 
+  // Filter students with packages >= 20 LPA
+  const topOfferStudents = records
+    .filter((r) => toNum(r.package) >= 20)
+    .sort((a, b) => toNum(b.package) - toNum(a.package));
+
   return (
     <div className="relative w-full min-h-full overflow-hidden">
       <motion.div
         variants={stage}
         initial="hidden"
         animate={isActive ? 'show' : 'hidden'}
-        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-9 max-w-7xl"
+        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-6 md:py-8 gap-5 max-w-7xl"
       >
         <SceneHeader
           folio="08"
@@ -64,7 +69,7 @@ export const Scene08Placements = ({ isActive }) => {
         {/* The figures that answer a parent's first question */}
         <motion.div
           variants={fadeUp}
-          className="flex flex-wrap items-end gap-x-14 gap-y-8 border-y-2 border-line-bright py-8"
+          className="flex flex-wrap items-end gap-x-12 gap-y-6 border-y-2 border-line-bright py-6"
         >
           <Figure
             value={95.4}
@@ -101,7 +106,7 @@ export const Scene08Placements = ({ isActive }) => {
         </motion.div>
 
         {/* Leading recruiters */}
-        <motion.div variants={fadeUp} className="flex flex-col gap-4">
+        <motion.div variants={fadeUp} className="flex flex-col gap-3">
           <div className="font-mono text-sm font-bold tracking-[0.22em] uppercase text-verdigris-bright">
             Leading Recruiters
           </div>
@@ -113,7 +118,7 @@ export const Scene08Placements = ({ isActive }) => {
                 <motion.div
                   key={c.company}
                   variants={fadeUp}
-                  className={`relative border-2 ${ink.border} bg-ink-raised p-5 flex flex-col gap-4`}
+                  className={`relative border-2 ${ink.border} bg-ink-raised p-4 flex flex-col gap-3`}
                 >
                   <span className={`absolute inset-x-0 top-0 h-[4px] ${ink.rule}`} />
 
@@ -121,33 +126,89 @@ export const Scene08Placements = ({ isActive }) => {
                     <CompanyLogo
                       companyName={c.company}
                       tone={CARD_INK[idx % CARD_INK.length]}
-                      className="w-10 h-10 shrink-0"
+                      className="w-9 h-9 shrink-0"
                     />
-                    <h4 className="font-display font-extrabold text-parchment text-lg md:text-xl leading-tight">
+                    <h4 className="font-display font-extrabold text-parchment text-base md:text-lg leading-tight">
                       {c.company}
                     </h4>
                   </div>
 
-                  <div className="mt-auto flex flex-col gap-3">
+                  <div className="mt-auto flex flex-col gap-2">
                     <div>
-                      <div className="font-display font-extrabold text-parchment text-4xl leading-none tabular-lining">
+                      <div className="font-display font-extrabold text-parchment text-3xl leading-none tabular-lining">
                         {c.count}
                       </div>
-                      <div className="font-mono text-[10px] font-bold tracking-[0.18em] uppercase text-parchment-dim mt-1.5">
+                      <div className="font-mono text-[10px] font-bold tracking-[0.18em] uppercase text-parchment-dim mt-1">
                         {c.count === 1 ? 'Student Placed' : 'Students Placed'}
                       </div>
                     </div>
 
-                    <div className="pt-3 border-t border-line">
-                      <div className={`font-display font-extrabold text-2xl leading-none tabular-lining ${ink.text}`}>
+                    <div className="pt-2 border-t border-line">
+                      <div className={`font-display font-extrabold text-xl leading-none tabular-lining ${ink.text}`}>
                         {c.highestLabel || formatPackage(c.highest)}
                       </div>
-                      <div className="font-mono text-[10px] font-bold tracking-[0.18em] uppercase text-parchment-dim mt-1.5">
+                      <div className="font-mono text-[10px] font-bold tracking-[0.18em] uppercase text-parchment-dim mt-1">
                         Highest Offer
                       </div>
                     </div>
                   </div>
                 </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Top Package Student Achievers (>= ₹20 LPA) */}
+        <motion.div variants={fadeUp} className="flex flex-col gap-3 pt-1">
+          <div className="flex items-center justify-between">
+            <div className="font-mono text-xs md:text-sm font-bold tracking-[0.22em] uppercase text-verdigris-bright flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-verdigris-bright animate-pulse" />
+              Top Package Achievers (₹20 LPA &amp; Above)
+            </div>
+            <span className="font-mono text-[11px] text-parchment-faint tracking-wider hidden sm:inline">
+              Super Dream &amp; Product Engineering Offers
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {topOfferStudents.map((st, idx) => {
+              const isSuperDream = toNum(st.package) >= 45;
+              return (
+                <div
+                  key={st.regNo || idx}
+                  className={`p-3.5 bg-ink-raised border flex flex-col justify-between gap-2 transition-all ${
+                    isSuperDream ? 'border-brass/60 shadow-[0_0_15px_rgba(212,175,55,0.15)]' : 'border-line hover:border-verdigris/50'
+                  }`}
+                >
+                  <div>
+                    {isSuperDream && (
+                      <div className="font-mono text-[9px] text-brass-bright font-extrabold tracking-wider uppercase mb-1">
+                        ★ SUPER DREAM
+                      </div>
+                    )}
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <h5 className="font-display font-extrabold text-parchment text-sm leading-snug">
+                        {st.student}
+                      </h5>
+                      <span className="font-mono text-[11px] font-medium text-parchment-faint tracking-wider">
+                        {st.regNo}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-line/60 flex items-center justify-between">
+                    <span className="font-mono text-xs font-semibold text-parchment-dim truncate">
+                      {st.company}
+                    </span>
+                    <span
+                      className={`font-display font-extrabold text-sm tabular-lining ${
+                        isSuperDream ? 'text-brass-bright' : 'text-verdigris-bright'
+                      }`}
+                    >
+                      {formatPackage(st.package)}
+                    </span>
+                  </div>
+                </div>
               );
             })}
           </div>

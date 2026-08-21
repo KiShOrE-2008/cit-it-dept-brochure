@@ -3,13 +3,24 @@ import React, { useEffect, useRef } from 'react';
 // The score under the deck. Mounted once by the shell, outside the scene
 // switcher, so it plays straight through every scene change instead of
 // restarting with each frame.
-export const BackgroundAudio = ({ src = '/assets/background_audio.mp3', volume = 0.3 }) => {
+export const BackgroundAudio = ({
+  src = '/assets/background_audio.mp3',
+  volume = 0.3,
+  isMuted = false
+}) => {
   const audioRef = useRef(null);
+
+  // Sync volume and mute state whenever props change
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    el.volume = isMuted ? 0 : volume;
+    el.muted = isMuted;
+  }, [volume, isMuted]);
 
   useEffect(() => {
     const el = audioRef.current;
     if (!el) return;
-    el.volume = volume;
 
     const start = () => el.play().catch(() => {});
 
@@ -25,7 +36,8 @@ export const BackgroundAudio = ({ src = '/assets/background_audio.mp3', volume =
       window.removeEventListener('pointerdown', start);
       window.removeEventListener('keydown', start);
     };
-  }, [volume]);
+  }, []);
 
   return <audio ref={audioRef} src={src} loop preload="auto" />;
 };
+

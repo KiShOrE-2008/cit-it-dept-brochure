@@ -4,72 +4,76 @@ import { presentationData } from '../../data/presentationData';
 import { stage, fadeUp, drawRule } from '../../lib/motion';
 import { MaskReveal } from '../ui/MaskReveal';
 
-// Chapter ink: brass. The cover leaf, and the only page in the deck that is
-// addressed to the room rather than about the department. It carries no
-// statistics on purpose — the numbers start on the next page, and a greeting
-// that opens with a placement figure is not a greeting.
-//
-// Centred, where every other scene is left-aligned: the change of axis is what
-// marks this as the cover rather than a content page.
+// Formal Cover Scene for the Parents & Teachers' Meeting 2026.
 export const Scene01Welcome = ({ isActive, onStartClick }) => (
   <div className="relative w-full h-full overflow-hidden">
     <motion.div
       variants={stage}
       initial="hidden"
       animate={isActive ? 'show' : 'hidden'}
-      className="relative z-10 h-full flex flex-col items-center justify-center text-center px-7 md:px-16 py-10 gap-6"
+      className="relative z-10 h-full flex flex-col items-center justify-center text-center px-7 md:px-16 py-8 gap-4 md:gap-5 max-w-4xl mx-auto"
     >
-      {/* The institution, in its own mark */}
+      {/* The institution logo */}
       <motion.img
         variants={fadeUp}
         src={presentationData.heroImages.logo}
         alt="Chennai Institute of Technology"
-        className="h-16 md:h-20 w-auto rounded-[7px]"
+        className="h-14 md:h-18 w-auto rounded-[7px]"
       />
 
+      {/* Top Label / Kicker */}
       <motion.div variants={fadeUp} className="flex items-center gap-3">
         <motion.span variants={drawRule} className="h-[3px] w-8 origin-left bg-brass" />
         <span className="font-mono text-[11px] md:text-xs font-semibold tracking-[0.28em] uppercase text-brass-bright">
-          Parents&apos; &amp; Teachers&apos; Meeting · 2026
+          PARENTS&apos; &amp; TEACHERS&apos; MEETING · 2026
         </span>
         <motion.span variants={drawRule} className="h-[3px] w-8 origin-right bg-brass" />
       </motion.div>
 
-      {/* The greeting */}
+      {/* Main Heading */}
       <h1 className="font-display font-semibold text-parchment leading-[1.05] tracking-[-0.015em] text-[2.4rem] md:text-6xl lg:text-7xl">
         <MaskReveal as="span" className="block">
           <span className="gilt">Welcome</span>
         </MaskReveal>
-        <MaskReveal as="span" className="block">to our parents and guardians</MaskReveal>
+        <MaskReveal as="span" className="block">Parents &amp; Guardians</MaskReveal>
       </h1>
 
+      {/* Main Paragraph */}
       <motion.p
         variants={fadeUp}
-        className="font-body text-parchment text-base md:text-lg leading-relaxed max-w-2xl"
+        className="font-body font-medium text-parchment text-base md:text-lg leading-relaxed max-w-3xl"
       >
-        Thank you for making the time to be with us today. The Department of
-        Information Technology is glad to have you here, and glad of the part you
-        have played in getting your child this far.
+        The Department of Information Technology, Chennai Institute of Technology, cordially welcomes all parents and guardians to the Parents’ &amp; Teachers’ Meeting 2026.
       </motion.p>
 
+      {/* Supporting Paragraph */}
       <motion.p
         variants={fadeUp}
-        className="font-body text-parchment-dim text-sm md:text-base leading-relaxed max-w-xl"
+        className="font-body text-parchment-dim text-sm md:text-base leading-relaxed max-w-2xl"
       >
-        What follows is an account of their year — the results they earned, the
-        competitions they won, and the offers those have led to.
+        This gathering provides an opportunity to reflect upon our students’ academic progress, achievements, learning experiences, and overall development, while strengthening the partnership between the institution and families.
       </motion.p>
 
-      <motion.div variants={fadeUp} className="flex flex-col items-center gap-3 pt-2">
-        <span className="font-institution font-bold uppercase tracking-[0.02em] text-parchment-dim text-sm md:text-base">
-          Department of Information Technology
+      {/* Closing Line */}
+      <motion.p
+        variants={fadeUp}
+        className="font-body font-semibold text-brass text-sm md:text-base tracking-wide max-w-xl"
+      >
+        We sincerely appreciate your presence and continued support.
+      </motion.p>
+
+      {/* Footer */}
+      <motion.div variants={fadeUp} className="flex flex-col items-center gap-1 pt-1">
+        <span className="font-institution font-bold uppercase tracking-[0.1em] text-parchment-dim text-xs md:text-sm">
+          DEPARTMENT OF INFORMATION TECHNOLOGY
         </span>
         <span className="font-mono text-[10px] md:text-[11px] tracking-[0.16em] uppercase text-parchment-faint">
-          {presentationData.collegeName}
+          CHENNAI INSTITUTE OF TECHNOLOGY
         </span>
       </motion.div>
 
-      <motion.div variants={fadeUp} className="pt-2">
+      {/* Begin CTA */}
+      <motion.div variants={fadeUp} className="pt-1">
         <button
           onClick={onStartClick}
           className="group flex items-center gap-3 font-mono text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-parchment hover:text-brass-bright transition-colors"

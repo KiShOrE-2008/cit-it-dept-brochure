@@ -34,20 +34,25 @@ export const Scene04VisionMission = ({ isActive }) => {
       >
         <SceneHeader folio="04" kicker="What We Stand For" title="Vision & Mission" tone="verdigris" />
 
-        {/* The vision, set as the largest passage on the page */}
-        <motion.blockquote variants={fadeUp} className="relative pl-6 md:pl-8 max-w-4xl">
-          <motion.span
-            variants={drawRuleV}
-            className="absolute left-0 top-0 bottom-0 w-[5px] origin-top gilt-bar"
-          />
-          <p className="font-display font-bold text-parchment text-base md:text-xl lg:text-2xl leading-[1.35]">
-            {quote}
-          </p>
-        </motion.blockquote>
+        {/* The vision section */}
+        <motion.div variants={fadeUp} className="flex flex-col gap-2 max-w-4xl">
+          <div className="font-mono text-lg md:text-2xl font-black tracking-[0.22em] uppercase text-verdigris-bright">
+            Our Vision
+          </div>
+          <blockquote className="relative pl-6 md:pl-8">
+            <motion.span
+              variants={drawRuleV}
+              className="absolute left-0 top-0 bottom-0 w-[5px] origin-top gilt-bar"
+            />
+            <p className="font-display font-bold text-parchment text-base md:text-xl lg:text-2xl leading-[1.35]">
+              {quote}
+            </p>
+          </blockquote>
+        </motion.div>
 
         {/* The five mission statements */}
         <motion.div variants={fadeUp} className="flex flex-col max-w-5xl">
-          <div className="font-mono text-sm font-bold tracking-[0.22em] uppercase text-verdigris-bright pb-2">
+          <div className="font-mono text-lg md:text-2xl font-black tracking-[0.22em] uppercase text-verdigris-bright pb-2">
             Our Mission
           </div>
 
