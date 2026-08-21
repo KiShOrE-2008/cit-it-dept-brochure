@@ -23,9 +23,11 @@ import { Scene14ThankYou } from '../scenes/Scene14ThankYou';
 export const PresentationShell = () => {
   const [currentScene, setCurrentScene] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [speed, setSpeed] = useState(14); // Default 14s per scene
+  const [speed, setSpeed] = useState(22); // Increased default time to 22s for comfortable viewing
   const [elapsed, setElapsed] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const sceneContainerRef = useRef(null);
 
   const sceneTitles = [
     "Welcome & Opening",
@@ -61,7 +63,7 @@ export const PresentationShell = () => {
     setElapsed(0);
   };
 
-  // Timer loop for auto-playing presentation scenes
+  // Timer loop for auto-playing presentation scenes with automated slow scroll down
   useEffect(() => {
     if (!isPlaying) return;
 
@@ -69,6 +71,18 @@ export const PresentationShell = () => {
     const timer = setInterval(() => {
       setElapsed((prev) => {
         const nextTime = prev + intervalTime / 1000;
+        
+        // Automated slow auto-scroll down inside active scene container
+        const container = sceneContainerRef.current;
+        if (container) {
+          const maxScroll = container.scrollHeight - container.clientHeight;
+          if (maxScroll > 10) {
+            // Smoothly scroll down as elapsed time progresses
+            const scrollRatio = Math.min(nextTime / (speed * 0.85), 1);
+            container.scrollTop = maxScroll * scrollRatio;
+          }
+        }
+
         if (nextTime >= speed) {
           nextScene();
           return 0;
@@ -101,16 +115,38 @@ export const PresentationShell = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextScene, prevScene]);
 
-  // Wheel scroll throttling for natural scene scrolling
+  // Intelligent Wheel Scroll: ONLY flip scenes when user reaches the top or bottom of the scroll container
   const lastScrollTime = useRef(0);
   const handleWheel = (e) => {
-    const now = Date.now();
-    if (now - lastScrollTime.current < 800) return;
+    const container = sceneContainerRef.current;
+    
+    if (container) {
+      const isScrollable = container.scrollHeight > container.clientHeight + 10;
 
-    if (e.deltaY > 30) {
+      if (isScrollable) {
+        const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 25;
+        const isAtTop = container.scrollTop <= 15;
+
+        // If user is scrolling down and NOT at bottom, let container scroll naturally
+        if (e.deltaY > 0 && !isAtBottom) {
+          return; // Allow native scroll down
+        }
+
+        // If user is scrolling up and NOT at top, let container scroll naturally
+        if (e.deltaY < 0 && !isAtTop) {
+          return; // Allow native scroll up
+        }
+      }
+    }
+
+    // Otherwise, trigger slide navigation with 700ms throttle
+    const now = Date.now();
+    if (now - lastScrollTime.current < 700) return;
+
+    if (e.deltaY > 40) {
       lastScrollTime.current = now;
       nextScene();
-    } else if (e.deltaY < -30) {
+    } else if (e.deltaY < -40) {
       lastScrollTime.current = now;
       prevScene();
     }
@@ -166,15 +202,16 @@ export const PresentationShell = () => {
       />
 
       {/* Main Fullscreen Scene viewport with cinematic slide transition */}
-      <main className="relative w-full h-full z-10">
+      <main className="relative w-full h-full z-10 pt-16 pb-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScene}
-            initial={{ opacity: 0, scale: 1.04, y: 15 }}
+            ref={sceneContainerRef}
+            initial={{ opacity: 0, scale: 1.03, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: -15 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full"
+            exit={{ opacity: 0, scale: 0.97, y: -15 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth"
           >
             {renderSceneContent(currentScene)}
           </motion.div>

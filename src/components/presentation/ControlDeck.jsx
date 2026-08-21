@@ -120,9 +120,9 @@ export const ControlDeck = ({
       {/* Speed selector */}
       <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
         {[
-          { label: 'Fast', sec: 8 },
-          { label: 'Normal', sec: 14 },
-          { label: 'Slow', sec: 22 }
+          { label: 'Fast', sec: 14 },
+          { label: 'Normal', sec: 22 },
+          { label: 'Slow', sec: 35 }
         ].map((s) => (
           <button
             key={s.label}
