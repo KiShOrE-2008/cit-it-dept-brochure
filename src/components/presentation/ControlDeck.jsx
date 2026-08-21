@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, Volume1, VolumeX } from 'lucide-react';
 
 export const ControlDeck = ({
@@ -21,11 +21,50 @@ export const ControlDeck = ({
 }) => {
   const [showJumpMenu, setShowJumpMenu] = useState(false);
   const [showAudioMenu, setShowAudioMenu] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isIdleHidden, setIsIdleHidden] = useState(false);
+
+  const hideTimerRef = useRef(null);
+
+  // Auto-hide inactivity timer logic (2.5 seconds)
+  useEffect(() => {
+    const resetHideTimer = () => {
+      setIsIdleHidden(false);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = setTimeout(() => {
+        setIsIdleHidden(true);
+      }, 2500);
+    };
+
+    window.addEventListener('mousemove', resetHideTimer);
+    window.addEventListener('keydown', resetHideTimer);
+    window.addEventListener('pointerdown', resetHideTimer);
+
+    resetHideTimer();
+
+    return () => {
+      window.removeEventListener('mousemove', resetHideTimer);
+      window.removeEventListener('keydown', resetHideTimer);
+      window.removeEventListener('pointerdown', resetHideTimer);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, []);
+
+  const isDeckActive = showJumpMenu || showAudioMenu || isHovered;
+  const isVisible = !isIdleHidden || isDeckActive;
 
   const effectiveVolume = isMuted ? 0 : volume;
 
   return (
-    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-6 z-40 flex items-center gap-1 px-2 py-2 bg-ink-raised/95 border border-line">
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`fixed bottom-5 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-6 z-40 flex items-center gap-1 px-2 py-2 bg-ink-raised/95 border border-line transition-all duration-500 ease-in-out ${
+        isVisible
+          ? 'opacity-100 translate-y-0 pointer-events-auto shadow-2xl'
+          : 'opacity-0 translate-y-6 pointer-events-none'
+      }`}
+    >
       {/* Scene index */}
       <div className="relative">
         <button
