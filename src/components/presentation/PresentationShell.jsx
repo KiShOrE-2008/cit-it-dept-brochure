@@ -37,8 +37,6 @@ export const PresentationShell = () => {
     "Hackathons & Competitions",
     "Events & Timeline",
     "Placements & Recruiters",
-    "Internships & Exposure",
-    "International Conference",
     "Department at a Glance",
     "Thank You & Closing"
   ];
@@ -171,10 +169,8 @@ export const PresentationShell = () => {
       case 4: return <Scene05Hackathons isActive={true} />;
       case 5: return <Scene06EventsTimeline isActive={true} />;
       case 6: return <Scene07Placements isActive={true} />;
-      case 7: return <Scene08Internships isActive={true} />;
-      case 8: return <Scene09Conference isActive={true} />;
-      case 9: return <Scene12DepartmentGlance isActive={true} />;
-      case 10: return <Scene14ThankYou isActive={true} />;
+      case 7: return <Scene12DepartmentGlance isActive={true} />;
+      case 8: return <Scene14ThankYou isActive={true} />;
       default: return null;
     }
   };
