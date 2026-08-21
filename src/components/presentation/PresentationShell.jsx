@@ -12,13 +12,7 @@ import { Scene04Achievements } from '../scenes/Scene04Achievements';
 import { Scene05Hackathons } from '../scenes/Scene05Hackathons';
 import { Scene06EventsTimeline } from '../scenes/Scene06EventsTimeline';
 import { Scene07Placements } from '../scenes/Scene07Placements';
-import { Scene08Internships } from '../scenes/Scene08Internships';
-import { Scene09Conference } from '../scenes/Scene09Conference';
-import { Scene10Faculty } from '../scenes/Scene10Faculty';
-import { Scene11Infrastructure } from '../scenes/Scene11Infrastructure';
 import { Scene12DepartmentGlance } from '../scenes/Scene12DepartmentGlance';
-import { Scene13StudentCare } from '../scenes/Scene13StudentCare';
-import { Scene14ThankYou } from '../scenes/Scene14ThankYou';
 
 export const PresentationShell = () => {
   const [currentScene, setCurrentScene] = useState(0);
@@ -33,17 +27,11 @@ export const PresentationShell = () => {
     "Welcome & Opening",
     "College & Department",
     "Vision & Mission",
-    "Student Achievements",
+    "Academic Toppers",
     "Hackathons & Competitions",
     "Events & Timeline",
     "Placements & Recruiters",
-    "Internships & Industry",
-    "International Conference",
-    "Faculty & Research",
-    "Infrastructure & CoEs",
-    "Department at a Glance",
-    "Student Care & Support",
-    "Thank You & Closing"
+    "Department at a Glance"
   ];
 
   const totalScenes = sceneTitles.length;
@@ -167,20 +155,14 @@ export const PresentationShell = () => {
   // Scene Component Switcher
   const renderSceneContent = (index) => {
     switch (index) {
-      case 0:  return <Scene01Welcome isActive={true} onStartClick={() => { selectScene(1); setIsPlaying(true); }} />;
-      case 1:  return <Scene02CollegeDept isActive={true} />;
-      case 2:  return <Scene03VisionMission isActive={true} />;
-      case 3:  return <Scene04Achievements isActive={true} />;
-      case 4:  return <Scene05Hackathons isActive={true} />;
-      case 5:  return <Scene06EventsTimeline isActive={true} />;
-      case 6:  return <Scene07Placements isActive={true} />;
-      case 7:  return <Scene08Internships isActive={true} />;
-      case 8:  return <Scene09Conference isActive={true} />;
-      case 9:  return <Scene10Faculty isActive={true} />;
-      case 10: return <Scene11Infrastructure isActive={true} />;
-      case 11: return <Scene12DepartmentGlance isActive={true} />;
-      case 12: return <Scene13StudentCare isActive={true} />;
-      case 13: return <Scene14ThankYou isActive={true} />;
+      case 0: return <Scene01Welcome isActive={true} onStartClick={() => { selectScene(1); setIsPlaying(true); }} />;
+      case 1: return <Scene02CollegeDept isActive={true} />;
+      case 2: return <Scene03VisionMission isActive={true} />;
+      case 3: return <Scene04Achievements isActive={true} />;
+      case 4: return <Scene05Hackathons isActive={true} />;
+      case 5: return <Scene06EventsTimeline isActive={true} />;
+      case 6: return <Scene07Placements isActive={true} />;
+      case 7: return <Scene12DepartmentGlance isActive={true} />;
       default: return null;
     }
   };

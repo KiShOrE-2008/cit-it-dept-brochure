@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { placementsData } from '../../data/placements';
-import { X, Search, Filter, Briefcase, Award, Building, ArrowUpDown } from 'lucide-react';
+import { placementsData, formatPackage } from '../../data/placements';
+import { X, Search, Briefcase, Building, ArrowUpDown } from 'lucide-react';
 
 export const PlacementDirectoryModal = ({ isOpen, onClose }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -30,7 +30,7 @@ export const PlacementDirectoryModal = ({ isOpen, onClose }) => {
 
       // Package Tier check
       let matchesPackage = true;
-      const numPkg = parseInt(item.package.replace(/[^0-9]/g, '')) || 0;
+      const numPkg = typeof item.package === 'number' ? item.package : (parseInt(String(item.package).replace(/[^0-9]/g, ''), 10) || 0);
 
       if (packageFilter === '50L') {
         matchesPackage = numPkg >= 50;
@@ -41,7 +41,7 @@ export const PlacementDirectoryModal = ({ isOpen, onClose }) => {
       } else if (packageFilter === '5L') {
         matchesPackage = numPkg >= 5;
       } else if (packageFilter === '4-6L') {
-        matchesPackage = item.package.includes('4–6') || item.package.includes('4–5') || numPkg < 7;
+        matchesPackage = numPkg <= 6;
       }
 
       return matchesSearch && matchesCompany && matchesPackage;
@@ -50,8 +50,8 @@ export const PlacementDirectoryModal = ({ isOpen, onClose }) => {
       let valB = b[sortField];
 
       if (sortField === 'package') {
-        valA = parseInt(a.package.replace(/[^0-9]/g, '')) || 0;
-        valB = parseInt(b.package.replace(/[^0-9]/g, '')) || 0;
+        valA = typeof a.package === 'number' ? a.package : (parseInt(String(a.package).replace(/[^0-9]/g, ''), 10) || 0);
+        valB = typeof b.package === 'number' ? b.package : (parseInt(String(b.package).replace(/[^0-9]/g, ''), 10) || 0);
       }
 
       if (valA < valB) return sortAsc ? -1 : 1;
@@ -218,7 +218,7 @@ export const PlacementDirectoryModal = ({ isOpen, onClose }) => {
                       </span>
                     </td>
                     <td className="py-3 px-3 font-extrabold font-heading text-amber-300">
-                      {item.package}
+                      {formatPackage(item.package)}
                     </td>
                     <td className="py-3 px-3 text-right">
                       <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold border border-emerald-500/30">
