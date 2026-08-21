@@ -12,7 +12,7 @@ const normalizePlacementRow = (row) => ({
   department: row.department || 'IT',
   status: row.status || 'Placed',
   company: row.company || '',
-  package: row.package || ''
+  package: typeof row.package === 'number' ? row.package : (parseInt(String(row.package || '').replace(/[^0-9]/g, ''), 10) || 0)
 });
 
 const normalizeAchievementRow = (row) => ({

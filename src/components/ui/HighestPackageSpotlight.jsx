@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { getHighestPackageData } from '../../data/placements';
+import { getHighestPackageData, formatPackage } from '../../data/placements';
 import { AnimatedCounter } from './AnimatedCounter';
 import { GlassCard } from './GlassCard';
-import { Award, Sparkles, Crown, Building2 } from 'lucide-react';
+import { Award, Crown } from 'lucide-react';
 
 export const HighestPackageSpotlight = ({ isActive = true }) => {
   const data = useMemo(() => getHighestPackageData(), []);
@@ -104,7 +104,7 @@ export const HighestPackageSpotlight = ({ isActive = true }) => {
                 <div className="pt-2 border-t border-amber-500/20 text-xs font-bold text-amber-300 flex items-center justify-center gap-1">
                   <span>{student.company}</span>
                   <span>•</span>
-                  <span>{student.package}</span>
+                  <span>{formatPackage(student.package)}</span>
                 </div>
               </GlassCard>
             </motion.div>
