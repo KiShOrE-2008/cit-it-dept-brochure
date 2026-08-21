@@ -55,6 +55,11 @@ export const Scene12DepartmentGlance = ({ isActive }) => {
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-wide">
                   {item.label}
                 </div>
+                {item.label.includes("Highest") && (
+                  <div className="text-[10px] font-black text-amber-400 font-heading tracking-widest uppercase pt-0.5">
+                    MICROSOFT
+                  </div>
+                )}
               </GlassCard>
             </motion.div>
           );

@@ -39,10 +39,7 @@ export const PresentationShell = () => {
     "Placements & Recruiters",
     "Internships & Exposure",
     "International Conference",
-    "Faculty Excellence",
-    "Infrastructure & CoE",
     "Department at a Glance",
-    "Student Care & Partnership",
     "Thank You & Closing"
   ];
 
@@ -176,11 +173,8 @@ export const PresentationShell = () => {
       case 6: return <Scene07Placements isActive={true} />;
       case 7: return <Scene08Internships isActive={true} />;
       case 8: return <Scene09Conference isActive={true} />;
-      case 9: return <Scene10Faculty isActive={true} />;
-      case 10: return <Scene11Infrastructure isActive={true} />;
-      case 11: return <Scene12DepartmentGlance isActive={true} />;
-      case 12: return <Scene13StudentCare isActive={true} />;
-      case 13: return <Scene14ThankYou isActive={true} />;
+      case 9: return <Scene12DepartmentGlance isActive={true} />;
+      case 10: return <Scene14ThankYou isActive={true} />;
       default: return null;
     }
   };
@@ -201,17 +195,17 @@ export const PresentationShell = () => {
         progressPct={progressPct}
       />
 
-      {/* Main Fullscreen Scene viewport with cinematic slide transition */}
+      {/* Main Fullscreen Scene viewport with motion-graphics video transitions */}
       <main className="relative w-full h-full z-10 pt-16 pb-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScene}
             ref={sceneContainerRef}
-            initial={{ opacity: 0, scale: 1.03, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: -15 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth"
+            initial={{ opacity: 0, scale: 1.06, filter: "blur(10px)", y: 20 }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, filter: "blur(10px)", y: -20 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth no-scrollbar"
           >
             {renderSceneContent(currentScene)}
           </motion.div>

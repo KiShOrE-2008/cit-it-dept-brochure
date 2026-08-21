@@ -2,106 +2,153 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
 import { GlassCard } from '../ui/GlassCard';
-import { Award, Building2, CheckCircle2, ShieldCheck, Zap } from 'lucide-react';
+import { Cpu, Shield, Globe, Terminal, Database, Cloud, Code, Layers, Zap } from 'lucide-react';
 
 export const Scene02CollegeDept = ({ isActive }) => {
+  const domains = [
+    "PROGRAMMING",
+    "ALGORITHMS",
+    "SOFTWARE ENGINEERING",
+    "COMPUTER NETWORKS",
+    "DATABASES",
+    "ARTIFICIAL INTELLIGENCE",
+    "CYBER SECURITY",
+    "CLOUD COMPUTING",
+    "WEB TECHNOLOGY",
+    "COMPUTER GRAPHICS",
+    "ROBOTICS"
+  ];
+
   return (
-    <div className="relative w-full h-full flex items-center justify-center p-6 md:p-12 overflow-hidden">
+    <div className="relative w-full h-full flex flex-col justify-between p-6 md:p-12 overflow-y-auto overflow-x-hidden scroll-smooth">
       {/* Background Campus Photo with Slow Parallax Zoom */}
       <motion.div
         initial={{ scale: 1 }}
         animate={isActive ? { scale: 1.08 } : { scale: 1 }}
         transition={{ duration: 15, ease: "linear" }}
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 pointer-events-none"
       >
         <img
           src={presentationData.heroImages.campus}
           alt="CIT Campus"
-          className="w-full h-full object-cover filter brightness-[0.25] contrast-[1.1]"
+          className="w-full h-full object-cover filter brightness-[0.22] contrast-[1.1]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/90" />
       </motion.div>
 
-      {/* Main Content Grid */}
-      <div className="relative z-10 max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        {/* Left Column - College Intro */}
+      {/* Z-10 Main Content */}
+      <div className="relative z-10 max-w-6xl mx-auto w-full space-y-10">
+        
+        {/* 1. OPENING HEADER */}
         <motion.div
-          initial={{ x: -50, opacity: 0 }}
-          animate={isActive ? { x: 0, opacity: 1 } : { x: -50, opacity: 0 }}
+          initial={{ y: -30, opacity: 0 }}
+          animate={isActive ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
           transition={{ duration: 0.8 }}
-          className="lg:col-span-6 space-y-6"
+          className="text-center space-y-3"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider">
-            <Building2 className="w-4 h-4" />
-            ACADEMIC PRESTIGE
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-extrabold uppercase tracking-widest">
+            <Zap className="w-4 h-4 text-cyan-400" />
+            DEPARTMENT OF INFORMATION TECHNOLOGY
           </div>
 
-          <h2 className="text-3xl md:text-5xl font-extrabold font-heading text-white leading-tight">
-            CHENNAI INSTITUTE <br />
-            <span className="text-gradient-cyan">OF TECHNOLOGY</span>
-          </h2>
+          <h1 className="text-4xl md:text-7xl font-black font-heading text-white tracking-tight leading-none">
+            INFORMATION <br />
+            <span className="text-gradient-cyan">TECHNOLOGY</span>
+          </h1>
 
-          <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-            Chennai Institute of Technology is a premier Autonomous Engineering Institution dedicated to nurturing industry-ready global engineers through world-class infrastructure and innovative pedagogy.
+          <p className="text-lg md:text-xl font-bold text-slate-300 font-heading tracking-wide">
+            B.Tech – Information Technology
           </p>
 
-          <div className="grid grid-cols-2 gap-4 pt-2">
-            <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 backdrop-blur-md flex items-center gap-3">
-              <ShieldCheck className="w-8 h-8 text-amber-400 shrink-0" />
-              <div>
-                <div className="text-lg font-bold text-amber-300 font-heading">NAAC 'A+'</div>
-                <div className="text-xs text-slate-400">Highest Accreditation</div>
-              </div>
+          <div className="flex items-center justify-center gap-3 pt-1">
+            <span className="px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-bold text-cyan-300">
+              4-Year Undergraduate Programme
+            </span>
+            <span className="px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-xs font-extrabold text-amber-300">
+              180 Intake
+            </span>
+          </div>
+        </motion.div>
+
+        {/* 2. MAIN DEPARTMENT DESCRIPTION (BALANCED 2-COLUMN LAYOUT) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* LEFT SIDE — LARGE TYPOGRAPHY */}
+          <motion.div
+            initial={{ x: -40, opacity: 0 }}
+            animate={isActive ? { x: 0, opacity: 1 } : { x: -40, opacity: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="lg:col-span-5 space-y-1"
+          >
+            <div className="text-3xl md:text-5xl font-black font-heading text-white tracking-tight leading-none uppercase">
+              ENGINEERING
+            </div>
+            <div className="text-3xl md:text-5xl font-black font-heading text-gradient-cyan tracking-tight leading-none uppercase">
+              TECHNOLOGY.
+            </div>
+            <div className="text-3xl md:text-5xl font-black font-heading text-white tracking-tight leading-none uppercase">
+              SOLVING
+            </div>
+            <div className="text-3xl md:text-5xl font-black font-heading text-amber-300 tracking-tight leading-none uppercase">
+              REAL-WORLD
+            </div>
+            <div className="text-3xl md:text-5xl font-black font-heading text-white tracking-tight leading-none uppercase">
+              PROBLEMS.
+            </div>
+          </motion.div>
+
+          {/* RIGHT SIDE — CONCISE OFFICIAL BROCHURE TEXT */}
+          <motion.div
+            initial={{ x: 40, opacity: 0 }}
+            animate={isActive ? { x: 0, opacity: 1 } : { x: 40, opacity: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="lg:col-span-7"
+          >
+            <GlassCard variant="cyan" className="p-8 space-y-4">
+              <p className="text-base md:text-lg text-slate-200 leading-relaxed font-medium">
+                Information Technology focuses on computation, algorithms, programming languages, software engineering, computer hardware, computer networks and problem-solving skills.
+              </p>
+              <div className="h-[1px] bg-cyan-500/30 w-full" />
+              <p className="text-sm md:text-base text-cyan-300 font-semibold leading-relaxed">
+                The program prepares students to design and develop technology-driven solutions for real-world business, scientific and societal challenges.
+              </p>
+            </GlassCard>
+          </motion.div>
+        </div>
+
+        {/* 3. IT TECHNOLOGY DOMAINS DYNAMIC VISUALIZATION */}
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={isActive ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="space-y-4 pt-4"
+        >
+          <div className="text-center text-xs font-extrabold text-slate-400 uppercase tracking-widest">
+            CORE IT TECHNOLOGY DOMAINS TAUGHT
+          </div>
+
+          <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 backdrop-blur-xl relative overflow-hidden flex flex-col items-center justify-center min-h-[220px]">
+            {/* Center IT Core Hub */}
+            <div className="relative z-10 w-24 h-24 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.5)] border-2 border-cyan-300 mb-6 animate-pulse-glow">
+              <span className="text-3xl font-black font-heading text-slate-950">IT</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 backdrop-blur-md flex items-center gap-3">
-              <Award className="w-8 h-8 text-cyan-400 shrink-0" />
-              <div>
-                <div className="text-lg font-bold text-cyan-300 font-heading">NBA Accredited</div>
-                <div className="text-xs text-slate-400">IT Tier-1 Status</div>
-              </div>
+            {/* Orbiting / Surrounding Domain Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-2.5 max-w-4xl relative z-10">
+              {domains.map((domain, idx) => (
+                <motion.span
+                  key={domain}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={isActive ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
+                  transition={{ duration: 0.5, delay: 0.7 + idx * 0.05 }}
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-950/90 border border-slate-800 text-xs font-extrabold font-heading text-slate-200 hover:text-cyan-300 hover:border-cyan-500/50 transition-all shadow-md"
+                >
+                  {domain}
+                </motion.span>
+              ))}
             </div>
           </div>
         </motion.div>
 
-        {/* Right Column - Department Profile */}
-        <motion.div
-          initial={{ x: 50, opacity: 0 }}
-          animate={isActive ? { x: 0, opacity: 1 } : { x: 50, opacity: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="lg:col-span-6"
-        >
-          <GlassCard className="space-y-5 border-cyan-500/30">
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
-              <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-                <Zap className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold font-heading text-white">Department of IT</h3>
-                <p className="text-xs text-cyan-400 font-medium">Centre of Academic & Technological Excellence</p>
-              </div>
-            </div>
-
-            <div className="space-y-3.5 text-sm text-slate-300">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                <span>Industry 4.0 aligned curriculum updating rapidly with AI, Cloud, Cyber & DevOps.</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                <span>Specialized Industry Centers of Excellence (CoE) supported by tech leaders.</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                <span>Dedicated Hackathon & Incubation cell driving top national prize wins.</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                <span>95%+ Placement Track Record with high package offers from global tech giants.</span>
-              </div>
-            </div>
-          </GlassCard>
-        </motion.div>
       </div>
     </div>
   );

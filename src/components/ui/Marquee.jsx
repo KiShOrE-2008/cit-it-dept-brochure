@@ -1,4 +1,5 @@
 import React from 'react';
+import { CompanyLogo } from './CompanyLogo';
 
 export const Marquee = ({ items = [], speed = 25 }) => {
   // Duplicate array so marquee scrolls seamlessly without breaks
@@ -17,14 +18,16 @@ export const Marquee = ({ items = [], speed = 25 }) => {
         {duplicatedItems.map((item, idx) => (
           <div
             key={idx}
-            className="flex items-center gap-3 px-6 py-3 rounded-xl bg-slate-900/80 border border-slate-800 backdrop-blur-md shadow-lg group hover:border-cyan-500/50 transition-colors"
+            className="flex items-center gap-3 px-6 py-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 backdrop-blur-md shadow-xl group hover:border-cyan-500/50 transition-all hover:scale-105"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-600/30 flex items-center justify-center text-cyan-400 font-bold text-sm border border-cyan-500/30">
-              {item.name.charAt(0)}
-            </div>
+            <CompanyLogo companyName={item.name} className="w-8 h-8 shrink-0" />
             <div>
-              <p className="text-sm font-bold text-slate-100 group-hover:text-cyan-300 transition-colors">{item.name}</p>
-              <p className="text-[11px] text-slate-400 font-medium">{item.category}</p>
+              <p className="text-sm font-extrabold text-slate-100 group-hover:text-cyan-300 transition-colors font-heading">
+                {item.name}
+              </p>
+              <p className="text-[11px] text-cyan-400/90 font-bold font-heading">
+                {item.tier || item.category}
+              </p>
             </div>
           </div>
         ))}

@@ -80,6 +80,47 @@ export const computePlacementMetrics = () => {
   };
 };
 
+// Dynamic helper to extract top package spotlight details
+export const getHighestPackageData = () => {
+  let maxVal = 0;
+  let topCompany = "";
+  let topPkgStr = "";
+
+  placementsData.forEach(p => {
+    const numeric = parseInt(p.package.replace(/[^0-9]/g, '')) || 0;
+    if (numeric > maxVal) {
+      maxVal = numeric;
+      topCompany = p.company;
+      topPkgStr = p.package;
+    }
+  });
+
+  const matchingStudents = placementsData
+    .filter(p => p.company === topCompany && p.package === topPkgStr)
+    .map(p => {
+      const parts = p.student.trim().split(' ');
+      const initials = parts.length > 1 
+        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+        : p.student.substring(0, 2).toUpperCase();
+
+      return {
+        name: p.student,
+        regNo: p.regNo,
+        initials: initials,
+        company: p.company,
+        package: p.package
+      };
+    });
+
+  return {
+    packageValue: topPkgStr,
+    numericVal: maxVal,
+    company: topCompany,
+    studentCount: matchingStudents.length,
+    students: matchingStudents
+  };
+};
+
 export const recruiterList = [
   { name: "Microsoft", tier: "Super Dream (₹58 LPA)", count: 3 },
   { name: "ServiceNow", tier: "Super Dream (₹48 LPA)", count: 1 },

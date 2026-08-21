@@ -82,21 +82,23 @@
   animation: pulseGlow 4s ease-in-out infinite;
 }
 
-/* Custom Scrollbar for inner containers */
+/* Hide scrollbars globally for video presentation feel */
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(3, 7, 18, 0.8);
+.no-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.3);
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.6);
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
 }
