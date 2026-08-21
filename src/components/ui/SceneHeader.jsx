@@ -4,47 +4,55 @@ import { stage, fadeUp, drawRule } from '../../lib/motion';
 import { MaskReveal } from './MaskReveal';
 
 const tones = {
-  brass: 'bg-brass text-brass',
-  oxblood: 'bg-oxblood text-oxblood-soft',
-  verdigris: 'bg-verdigris text-verdigris-soft',
-  sapphire: 'bg-sapphire text-sapphire-soft',
+  brass: { rule: 'bg-brass', kicker: 'text-brass-bright', accent: 'text-brass-soft' },
+  oxblood: { rule: 'bg-oxblood', kicker: 'text-oxblood-bright', accent: 'text-oxblood-soft' },
+  verdigris: { rule: 'bg-verdigris', kicker: 'text-verdigris-bright', accent: 'text-verdigris-soft' },
+  sapphire: { rule: 'bg-sapphire', kicker: 'text-sapphire-bright', accent: 'text-sapphire-soft' }
 };
 
-// Shared masthead used across the content scenes: a drawn rule + mono
-// kicker in a jewel ink, then a display-serif headline that reveals
-// line by line. This is the one recurring structural device —
-// everything else in a scene composes around it, so the choreography
-// never has to be reinvented per scene. `tone` varies the ink per
-// scene, like chapters lit by different stained glass.
-export const SceneHeader = ({ folio, kicker, title, lead, align = 'left', size = 'lg', tone = 'brass' }) => {
+// The one recurring structural device: a drawn rule + mono kicker in this
+// chapter's jewel ink, then a heavy display headline revealing line by line.
+// `accentLine` gilds or inks a single line of the headline so the title
+// itself carries the chapter colour rather than relying on a coloured chip.
+export const SceneHeader = ({
+  folio,
+  kicker,
+  title,
+  lead,
+  align = 'left',
+  size = 'lg',
+  tone = 'brass',
+  accentLine = null
+}) => {
   const lines = Array.isArray(title) ? title : [title];
   const isCenter = align === 'center';
-  const [ruleColor, kickerColor] = tones[tone].split(' ');
-  const titleSize = size === 'xl'
-    ? 'text-5xl md:text-7xl lg:text-8xl'
-    : 'text-4xl md:text-6xl lg:text-7xl';
+  const t = tones[tone] || tones.brass;
+  const titleSize =
+    size === 'xl'
+      ? 'text-5xl md:text-7xl lg:text-8xl'
+      : 'text-4xl md:text-6xl lg:text-[4.25rem]';
 
   return (
     <motion.div
       variants={stage}
-      className={`flex flex-col gap-5 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}
+      className={`flex flex-col gap-4 ${isCenter ? 'items-center text-center' : 'items-start text-left'}`}
     >
       <motion.div variants={fadeUp} className="flex items-center gap-3">
         {folio && (
-          <span className="font-mono text-sm tracking-[0.25em] text-parchment-dim tabular-lining">
+          <span className="font-mono text-sm font-semibold tracking-[0.25em] text-parchment-faint tabular-lining">
             {folio}
           </span>
         )}
-        <motion.span variants={drawRule} className={`h-[3px] w-9 origin-left ${ruleColor}`} />
-        <span className={`font-mono text-sm tracking-[0.25em] uppercase font-medium ${kickerColor}`}>
+        <motion.span variants={drawRule} className={`h-[4px] w-12 origin-left ${t.rule}`} />
+        <span className={`font-mono text-sm md:text-base tracking-[0.24em] uppercase font-bold ${t.kicker}`}>
           {kicker}
         </span>
       </motion.div>
 
-      <h2 className={`font-display font-medium text-parchment leading-[0.96] ${titleSize}`}>
+      <h2 className={`font-display font-extrabold text-parchment leading-[0.92] ${titleSize}`}>
         {lines.map((line, i) => (
-          <MaskReveal key={i} as="span" className={isCenter ? 'block' : 'block'}>
-            {line}
+          <MaskReveal key={i} as="span" className="block">
+            <span className={i === accentLine ? t.accent : undefined}>{line}</span>
           </MaskReveal>
         ))}
       </h2>
@@ -52,7 +60,9 @@ export const SceneHeader = ({ folio, kicker, title, lead, align = 'left', size =
       {lead && (
         <motion.p
           variants={fadeUp}
-          className={`font-body text-parchment-dim text-lg md:text-xl leading-relaxed ${isCenter ? 'max-w-2xl' : 'max-w-xl'}`}
+          className={`font-body font-medium text-parchment text-lg md:text-xl leading-relaxed ${
+            isCenter ? 'max-w-2xl' : 'max-w-2xl'
+          }`}
         >
           {lead}
         </motion.p>

@@ -8,20 +8,21 @@ import { fadeUp } from '../../lib/motion';
 export const LedgerRow = ({ label, value, note, tone = 'parchment' }) => {
   const valueColor = {
     parchment: 'text-parchment',
-    brass: 'text-brass-soft',
-    oxblood: 'text-oxblood-soft',
-    verdigris: 'text-verdigris-soft',
-    sapphire: 'text-sapphire-soft',
+    brass: 'text-brass-bright',
+    oxblood: 'text-oxblood-bright',
+    verdigris: 'text-verdigris-bright',
+    sapphire: 'text-sapphire-bright',
+    gilt: 'gilt',
   }[tone];
 
   return (
     <motion.div variants={fadeUp} className="ledger-row">
-      <span className="font-mono text-sm md:text-base tracking-[0.12em] uppercase text-parchment-dim max-w-[60%]">
+      <span className="font-mono text-sm md:text-base font-semibold tracking-[0.14em] uppercase text-parchment-dim max-w-[55%]">
         {label}
       </span>
-      <span className={`font-display text-2xl md:text-3xl tabular-lining ${valueColor}`}>
+      <span className={`font-display font-extrabold text-3xl md:text-4xl tabular-lining ${valueColor}`}>
         {value}
-        {note && <span className="ml-2 font-mono text-sm tracking-wider text-parchment-faint align-middle">{note}</span>}
+        {note && <span className="ml-2 font-mono text-sm font-semibold tracking-wider text-parchment-faint align-middle">{note}</span>}
       </span>
     </motion.div>
   );

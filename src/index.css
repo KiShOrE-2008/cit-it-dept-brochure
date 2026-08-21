@@ -1,29 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-  /* Illuminated Ledger palette — a leather-bound record lit with real
-     jewel inks (gold, ruby, emerald, sapphire), not a single restrained
-     accent. Rich and saturated, but every ink sits on the same deep
-     ground so it never tips into neon-dashboard territory. */
+  /* ── Illuminated Ledger ────────────────────────────────────────────
+     A leather-bound convocation record, but lit the way an illuminated
+     manuscript actually is: jewel pigments at full strength and real
+     gold leaf on the passages that matter. The ground stays deep so the
+     inks can run hot without tipping into neon-dashboard territory.
+     Read from the back of a hall, not from a designer's monitor. */
   --color-ink: #120e0a;
-  --color-ink-raised: #221a12;
+  --color-ink-raised: #241b12;
   --color-ink-deep: #0a0705;
-  --color-parchment: #f5eeda;
-  --color-parchment-dim: #c9bc9c;
+
+  /* Parchment is the working text colour, not a highlight. Anything a
+     parent needs to read is `parchment`; `dim` is metadata only. */
+  --color-parchment: #faf4e4;
+  --color-parchment-dim: #cabd9d;
   --color-parchment-faint: #8c8067;
+
+  /* Jewel inks. `-bright` variants exist for figures and headlines that
+     must carry across a projected room. */
   --color-brass: #dcaa1f;
   --color-brass-soft: #f0cb5c;
+  --color-brass-bright: #ffd44d;
+  --color-brass-dim: #8a6f2a;
+
   --color-oxblood: #d3495c;
   --color-oxblood-soft: #ea7688;
+  --color-oxblood-bright: #ff8a9c;
   --color-oxblood-deep: #7a2432;
+
   --color-verdigris: #3fae83;
   --color-verdigris-soft: #7cd1ab;
+  --color-verdigris-bright: #6ee7b0;
+
   --color-sapphire: #5b8fd4;
   --color-sapphire-soft: #93b8e8;
+  --color-sapphire-bright: #a9cdf7;
+
   --color-line: #4a3d28;
   --color-line-bright: #6b5738;
 
-  /* Type roles: display serif / reading serif / ledger mono — never a system-default pairing */
+  /* Type roles: display serif / reading serif / ledger mono */
   --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
   --font-body: "Source Serif 4", Cambria, Georgia, serif;
   --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
@@ -37,18 +54,24 @@
     background-color: var(--color-ink);
     color: var(--color-parchment);
   }
+  /* Display type is set heavy. A convocation headline should read as a
+     proclamation, not a caption. */
   h1, h2, h3, h4, h5, h6, .font-heading {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 700;
   }
   ::selection {
     background: var(--color-brass);
     color: var(--color-ink);
   }
+  :focus-visible {
+    outline: 2px solid var(--color-brass-bright);
+    outline-offset: 3px;
+  }
 }
 
 /* ---------------------------------------------------------------- */
-/* Dossier surface: paper grain + vignette, static, no motion       */
+/* Dossier surface: paper grain + vignette, static, no motion        */
 /* ---------------------------------------------------------------- */
 
 .paper-grain {
@@ -60,6 +83,48 @@
   background:
     radial-gradient(ellipse 90% 70% at 50% 0%, transparent 55%, rgba(0,0,0,0.55) 100%),
     radial-gradient(ellipse 90% 70% at 50% 100%, transparent 55%, rgba(0,0,0,0.55) 100%);
+}
+
+/* ---------------------------------------------------------------- */
+/* Gold leaf — the signature                                         */
+/* ---------------------------------------------------------------- */
+/* Reserved for the single most important figure in a scene: the top
+   GPA, the highest package, the headline count. A flat gold fill reads
+   as "yellow text"; layered stops plus a slow specular sweep read as
+   struck metal, which is the whole promise of "illuminated". */
+
+.gilt {
+  background-image: linear-gradient(
+    100deg,
+    #8a6f2a 0%,
+    #dcaa1f 18%,
+    #ffe9a8 34%,
+    #fff8e2 42%,
+    #ffd44d 52%,
+    #dcaa1f 68%,
+    #a07c22 86%,
+    #dcaa1f 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: giltSweep 9s ease-in-out infinite;
+}
+
+@keyframes giltSweep {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* Same leaf, applied to a rule or a solid block rather than to text. */
+.gilt-bar {
+  background-image: linear-gradient(
+    100deg,
+    #8a6f2a 0%, #dcaa1f 20%, #ffe9a8 38%, #ffd44d 55%, #dcaa1f 72%, #8a6f2a 100%
+  );
+  background-size: 250% 100%;
+  animation: giltSweep 9s ease-in-out infinite;
 }
 
 /* ---------------------------------------------------------------- */
@@ -92,6 +157,15 @@
   font-variant-numeric: tabular-nums lining-nums;
 }
 
+/* Oversized chapter numeral bled off the page edge, used once per scene. */
+.folio-ghost {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.72;
+  user-select: none;
+  pointer-events: none;
+}
+
 /* Custom scrollbar tuned to the dossier surface */
 ::-webkit-scrollbar {
   width: 5px;
@@ -103,7 +177,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-brass-dim, #8a6f2a);
+  background: var(--color-brass-dim);
   border-radius: 9999px;
 }
 
@@ -116,5 +190,9 @@
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+  .gilt, .gilt-bar {
+    animation: none !important;
+    background-position: 40% 50% !important;
   }
 }

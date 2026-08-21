@@ -1,95 +1,75 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
-import { GlassCard } from '../ui/GlassCard';
-import { Compass, Target, Quote } from 'lucide-react';
+import { stage, fadeUp, drawRuleV } from '../../lib/motion';
+import { SceneHeader } from '../ui/SceneHeader';
+
+// Chapter ink: verdigris. The vision is the department's own words, so it
+// gets the largest passage on the page. The five mission statements are a
+// genuine numbered set — the numerals carry the count, not decoration.
+const MISSION_INKS = [
+  'text-brass-bright',
+  'text-oxblood-bright',
+  'text-verdigris-bright',
+  'text-sapphire-bright',
+  'text-brass-bright'
+];
+
+const MISSION_RULES = ['bg-brass', 'bg-oxblood', 'bg-verdigris', 'bg-sapphire', 'bg-brass'];
 
 export const Scene03VisionMission = ({ isActive }) => {
   const { quote, mission } = presentationData.vision;
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center p-4 md:p-8 overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[560px] h-[560px] rounded-full bg-cyan-500/10 blur-[150px] pointer-events-none" />
+    <div className="relative w-full min-h-full overflow-hidden">
+      <span className="folio-ghost absolute -top-[0.08em] right-2 md:right-10 text-[40vw] md:text-[24vw] text-verdigris/[0.08]">
+        03
+      </span>
 
-      {/* Title */}
       <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={isActive ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center max-w-3xl mb-5 space-y-2 z-10 shrink-0"
+        variants={stage}
+        initial="hidden"
+        animate={isActive ? 'show' : 'hidden'}
+        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-9 max-w-6xl"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider">
-          <Compass className="w-4 h-4" />
-          WHAT WE STAND FOR
-        </div>
-        <h2 className="text-3xl md:text-5xl font-extrabold font-heading text-white">
-          VISION &amp; <span className="text-gradient-cyan">MISSION</span>
-        </h2>
-      </motion.div>
+        <SceneHeader folio="03" kicker="What We Stand For" title="Vision & Mission" tone="verdigris" />
 
-      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Vision */}
-        <motion.div
-          initial={{ x: -30, opacity: 0 }}
-          animate={isActive ? { x: 0, opacity: 1 } : { x: -30, opacity: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="lg:col-span-5"
-        >
-          <GlassCard variant="cyan" className="h-full p-6 flex flex-col justify-center relative">
-            <Quote className="absolute top-4 right-4 w-10 h-10 text-cyan-500/15" />
+        {/* The vision, set as the largest passage on the page */}
+        <motion.blockquote variants={fadeUp} className="relative pl-6 md:pl-8 max-w-4xl">
+          <motion.span
+            variants={drawRuleV}
+            className="absolute left-0 top-0 bottom-0 w-[5px] origin-top gilt-bar"
+          />
+          <p className="font-display font-bold text-parchment text-xl md:text-3xl lg:text-[2rem] leading-[1.3]">
+            {quote}
+          </p>
+        </motion.blockquote>
 
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/40 flex items-center justify-center text-cyan-300">
-                <Compass className="w-4.5 h-4.5" />
-              </div>
-              <h3 className="text-xl md:text-2xl font-extrabold font-heading text-gradient-cyan">
-                OUR VISION
-              </h3>
-            </div>
-
-            <p className="text-sm md:text-base text-slate-200 leading-relaxed font-medium">
-              {quote}
-            </p>
-
-            <div className="mt-4 h-[2px] w-20 bg-gradient-to-r from-cyan-400 to-transparent rounded-full" />
-          </GlassCard>
-        </motion.div>
-
-        {/* Mission */}
-        <div className="lg:col-span-7 flex flex-col gap-3">
-          <motion.div
-            initial={{ y: -12, opacity: 0 }}
-            animate={isActive ? { y: 0, opacity: 1 } : { y: -12, opacity: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex items-center gap-2 px-1"
-          >
-            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-amber-300">
-              <Target className="w-4.5 h-4.5" />
-            </div>
-            <h3 className="text-xl md:text-2xl font-extrabold font-heading text-gradient-gold">
-              OUR MISSION
-            </h3>
-          </motion.div>
+        {/* The five mission statements */}
+        <motion.div variants={fadeUp} className="flex flex-col max-w-5xl">
+          <div className="font-mono text-sm font-bold tracking-[0.22em] uppercase text-verdigris-bright pb-3">
+            Our Mission
+          </div>
 
           {mission.map((item, idx) => (
             <motion.div
               key={item.id}
-              initial={{ x: 24, opacity: 0 }}
-              animate={isActive ? { x: 0, opacity: 1 } : { x: 24, opacity: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 + idx * 0.1 }}
-              className="group flex gap-3 items-start p-3 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-colors"
+              variants={fadeUp}
+              className="flex gap-4 md:gap-5 items-start py-4 border-t border-line last:border-b"
             >
-              <span className="shrink-0 w-8 h-8 rounded-lg bg-slate-950 border border-cyan-500/30 text-cyan-400 font-heading font-black text-xs flex items-center justify-center group-hover:bg-cyan-500/15 transition-colors">
+              <span
+                className={`shrink-0 font-display font-extrabold text-3xl md:text-4xl tabular-lining leading-none ${MISSION_INKS[idx]}`}
+              >
                 {item.id}
               </span>
-              <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-medium pt-1">
+              <span className={`shrink-0 mt-3 hidden md:block h-[3px] w-10 ${MISSION_RULES[idx]}`} />
+              <p className="font-body font-medium text-parchment text-base md:text-lg leading-relaxed">
                 {item.text}
               </p>
             </motion.div>
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

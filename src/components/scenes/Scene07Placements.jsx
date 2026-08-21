@@ -2,13 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { placementsData, getTopCompanies, formatPackage } from '../../data/placements';
 import { getPlacementsData } from '../../services/dataService';
-import { AnimatedCounter } from '../ui/AnimatedCounter';
+import { stage, fadeUp } from '../../lib/motion';
+import { SceneHeader } from '../ui/SceneHeader';
+import { Figure } from '../ui/Figure';
 import { CompanyLogo } from '../ui/CompanyLogo';
-import { GlassCard } from '../ui/GlassCard';
-import { Briefcase, Users, TrendingUp, Building2 } from 'lucide-react';
 
+// Chapter ink: verdigris.
 // This scene reports company-level outcomes only. Individual student names and
 // register numbers are intentionally never rendered here.
+const CARD_INK = ['brass', 'oxblood', 'verdigris', 'sapphire', 'brass'];
+
+const INK = {
+  brass: { text: 'text-brass-bright', rule: 'bg-brass', border: 'border-brass/50' },
+  oxblood: { text: 'text-oxblood-bright', rule: 'bg-oxblood', border: 'border-oxblood/50' },
+  verdigris: { text: 'text-verdigris-bright', rule: 'bg-verdigris', border: 'border-verdigris/50' },
+  sapphire: { text: 'text-sapphire-bright', rule: 'bg-sapphire', border: 'border-sapphire/50' }
+};
+
 export const Scene07Placements = ({ isActive }) => {
   const [records, setRecords] = useState(placementsData);
 
@@ -35,119 +45,114 @@ export const Scene07Placements = ({ isActive }) => {
   const totalRecruiters = new Set(records.map((r) => r.company).filter(Boolean)).size;
   const highest = records.reduce((max, r) => Math.max(max, toNum(r.package)), 0);
 
-  const headlineStats = [
-    { icon: Users, label: 'Students Placed', value: totalPlaced, suffix: '' },
-    { icon: Building2, label: 'Recruiting Partners', value: totalRecruiters, suffix: '' },
-    { icon: TrendingUp, label: 'Highest Package', value: highest, prefix: '₹', suffix: ' LPA' }
-  ];
-
   return (
-    <div className="relative w-full h-full flex flex-col items-center p-4 md:p-8 overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full bg-emerald-500/10 blur-[150px] pointer-events-none" />
-
-      {/* Title */}
+    <div className="relative w-full min-h-full overflow-hidden">
       <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={isActive ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center max-w-3xl mb-5 space-y-2 z-10 shrink-0"
+        variants={stage}
+        initial="hidden"
+        animate={isActive ? 'show' : 'hidden'}
+        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-9 max-w-7xl"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-          <Briefcase className="w-4 h-4" />
-          CAREER OUTCOMES
-        </div>
-        <h2 className="text-3xl md:text-5xl font-extrabold font-heading text-white">
-          PLACEMENTS &amp; <span className="text-gradient-emerald">RECRUITERS</span>
-        </h2>
+        <SceneHeader
+          folio="07"
+          kicker="Career Outcomes"
+          title={['Placements &', 'Recruiters']}
+          accentLine={1}
+          tone="verdigris"
+        />
+
+        {/* The figures that answer a parent's first question */}
+        <motion.div
+          variants={fadeUp}
+          className="flex flex-wrap items-end gap-x-14 gap-y-8 border-y-2 border-line-bright py-8"
+        >
+          <Figure
+            value={95.4}
+            decimals={1}
+            suffix="%"
+            label="Placement Success"
+            tone="verdigris"
+            size="lg"
+            isActive={isActive}
+          />
+          <Figure
+            value={highest}
+            prefix="₹"
+            suffix=" LPA"
+            label="Highest Package"
+            gilt
+            size="lg"
+            isActive={isActive}
+          />
+          <Figure
+            value={totalPlaced}
+            label="Students Placed"
+            tone="parchment"
+            size="md"
+            isActive={isActive}
+          />
+          <Figure
+            value={totalRecruiters}
+            label="Recruiting Partners"
+            tone="sapphire"
+            size="md"
+            isActive={isActive}
+          />
+        </motion.div>
+
+        {/* Leading recruiters */}
+        <motion.div variants={fadeUp} className="flex flex-col gap-4">
+          <div className="font-mono text-sm font-bold tracking-[0.22em] uppercase text-verdigris-bright">
+            Leading Recruiters
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {topCompanies.map((c, idx) => {
+              const ink = INK[CARD_INK[idx % CARD_INK.length]];
+              return (
+                <motion.div
+                  key={c.company}
+                  variants={fadeUp}
+                  className={`relative border-2 ${ink.border} bg-ink-raised p-5 flex flex-col gap-4`}
+                >
+                  <span className={`absolute inset-x-0 top-0 h-[4px] ${ink.rule}`} />
+
+                  <div className="flex items-center gap-3">
+                    <CompanyLogo
+                      companyName={c.company}
+                      tone={CARD_INK[idx % CARD_INK.length]}
+                      className="w-10 h-10 shrink-0"
+                    />
+                    <h4 className="font-display font-extrabold text-parchment text-lg md:text-xl leading-tight">
+                      {c.company}
+                    </h4>
+                  </div>
+
+                  <div className="mt-auto flex flex-col gap-3">
+                    <div>
+                      <div className="font-display font-extrabold text-parchment text-4xl leading-none tabular-lining">
+                        {c.count}
+                      </div>
+                      <div className="font-mono text-[10px] font-bold tracking-[0.18em] uppercase text-parchment-dim mt-1.5">
+                        {c.count === 1 ? 'Student Placed' : 'Students Placed'}
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-line">
+                      <div className={`font-display font-extrabold text-2xl leading-none tabular-lining ${ink.text}`}>
+                        {c.highestLabel || formatPackage(c.highest)}
+                      </div>
+                      <div className="font-mono text-[10px] font-bold tracking-[0.18em] uppercase text-parchment-dim mt-1.5">
+                        Highest Offer
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
       </motion.div>
-
-      {/* Headline stats */}
-      <div className="relative z-10 w-full max-w-4xl grid grid-cols-3 gap-3 md:gap-4 mb-5">
-        {headlineStats.map((s, idx) => (
-          <motion.div
-            key={s.label}
-            initial={{ scale: 0.85, opacity: 0 }}
-            animate={isActive ? { scale: 1, opacity: 1 } : { scale: 0.85, opacity: 0 }}
-            transition={{ duration: 0.5, delay: idx * 0.1 }}
-          >
-            <GlassCard variant="dark" className="p-4 text-center space-y-1">
-              <s.icon className="w-4 h-4 mx-auto text-emerald-400" />
-              <div className="text-2xl md:text-3xl text-white">
-                <AnimatedCounter
-                  end={s.value}
-                  prefix={s.prefix || ''}
-                  suffix={s.suffix}
-                  isActive={isActive}
-                />
-              </div>
-              <div className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                {s.label}
-              </div>
-            </GlassCard>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Top recruiters */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={isActive ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
-        className="text-[10px] font-black tracking-widest text-slate-500 uppercase mb-3 z-10"
-      >
-        Top Recruiting Companies
-      </motion.p>
-
-      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-        {topCompanies.map((c, idx) => (
-          <motion.div
-            key={c.company}
-            initial={{ y: 26, opacity: 0 }}
-            animate={isActive ? { y: 0, opacity: 1 } : { y: 26, opacity: 0 }}
-            transition={{ duration: 0.55, delay: 0.4 + idx * 0.1 }}
-          >
-            <GlassCard
-              variant={idx === 0 ? 'gold' : 'dark'}
-              className={`h-full p-4 text-center space-y-2.5 ${
-                idx === 0 ? 'border-amber-500/40' : 'hover:border-emerald-500/50'
-              } group`}
-            >
-              <div className="flex justify-center">
-                <CompanyLogo companyName={c.company} className="w-10 h-10" />
-              </div>
-
-              <h4 className="text-sm font-extrabold font-heading text-white truncate group-hover:text-emerald-300 transition-colors">
-                {c.company}
-              </h4>
-
-              <div className="space-y-1 pt-1 border-t border-white/10">
-                <div>
-                  <div className="text-xl font-extrabold font-heading text-white">
-                    <AnimatedCounter end={c.count} isActive={isActive} />
-                  </div>
-                  <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
-                    {c.count === 1 ? 'Student Placed' : 'Students Placed'}
-                  </div>
-                </div>
-
-                <div className="pt-1">
-                  <div
-                    className={`text-base font-extrabold font-heading ${
-                      idx === 0 ? 'text-gradient-gold' : 'text-emerald-300'
-                    }`}
-                  >
-                    {c.highestLabel || formatPackage(c.highest)}
-                  </div>
-                  <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
-                    Highest Offer
-                  </div>
-                </div>
-              </div>
-            </GlassCard>
-          </motion.div>
-        ))}
-      </div>
     </div>
   );
 };

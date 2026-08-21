@@ -4,14 +4,17 @@ import { achievementsData } from '../../data/achievements';
 import { presentationData } from '../../data/presentationData';
 import { resolveHackathonFeatures } from '../../data/hackathonFeatures';
 import { getAchievementsData, getAssetImageUrl } from '../../services/dataService';
-import { GlassCard } from '../ui/GlassCard';
-import { ChevronLeft, ChevronRight, Code, Trophy, MapPin, Users, Calendar } from 'lucide-react';
+import { stage, fadeUp } from '../../lib/motion';
+import { SceneHeader } from '../ui/SceneHeader';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const ACCENT = {
-  amber: { text: 'text-amber-300', border: 'border-amber-500/40', chip: 'bg-amber-500 text-slate-950' },
-  cyan: { text: 'text-cyan-300', border: 'border-cyan-500/40', chip: 'bg-cyan-500 text-slate-950' },
-  emerald: { text: 'text-emerald-300', border: 'border-emerald-500/40', chip: 'bg-emerald-500 text-slate-950' },
-  purple: { text: 'text-purple-300', border: 'border-purple-500/40', chip: 'bg-purple-500 text-slate-950' }
+// Chapter ink: oxblood. Each win is a plate in the record — the photograph
+// carries the moment, the facing column carries the citation.
+const INKS = {
+  brass: { text: 'text-brass-bright', bg: 'bg-brass', border: 'border-brass', chip: 'bg-brass text-ink' },
+  oxblood: { text: 'text-oxblood-bright', bg: 'bg-oxblood', border: 'border-oxblood', chip: 'bg-oxblood text-parchment' },
+  verdigris: { text: 'text-verdigris-bright', bg: 'bg-verdigris', border: 'border-verdigris', chip: 'bg-verdigris text-ink' },
+  sapphire: { text: 'text-sapphire-bright', bg: 'bg-sapphire', border: 'border-sapphire', chip: 'bg-sapphire text-ink' }
 };
 
 export const Scene05Hackathons = ({ isActive }) => {
@@ -34,7 +37,6 @@ export const Scene05Hackathons = ({ isActive }) => {
 
   const features = resolveHackathonFeatures(achievements);
 
-  // Rotate through the featured photos while the scene is on screen.
   useEffect(() => {
     if (!isActive || features.length < 2) return;
     const timer = setInterval(() => {
@@ -48,181 +50,131 @@ export const Scene05Hackathons = ({ isActive }) => {
   const safeIdx = activeIdx % features.length;
   const feature = features[safeIdx];
   const { row } = feature;
-  const accent = ACCENT[feature.accent] || ACCENT.cyan;
-
+  const ink = INKS[feature.accent] || INKS.oxblood;
   const imageUrl = getAssetImageUrl(feature.imageKey, presentationData.heroImages.hackathon);
+  const go = (dir) => setActiveIdx((prev) => (prev + dir + features.length) % features.length);
 
-  const go = (dir) =>
-    setActiveIdx((prev) => (prev + dir + features.length) % features.length);
+  const citation = [
+    [row.students.length > 1 ? 'Team' : 'Student', row.students.join(', ') + (row.teamName ? ` · ${row.teamName}` : '')],
+    ['Organiser', row.organizer],
+    ['Venue', row.location],
+    ['Date', row.date]
+  ].filter(([, v]) => v);
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center p-4 md:p-8 overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-amber-500/10 blur-[150px] pointer-events-none" />
-
-      {/* Title */}
+    <div className="relative w-full min-h-full overflow-hidden">
       <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={isActive ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center max-w-3xl mb-5 space-y-2 z-10 shrink-0"
+        variants={stage}
+        initial="hidden"
+        animate={isActive ? 'show' : 'hidden'}
+        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-8 max-w-7xl"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider">
-          <Code className="w-4 h-4" />
-          NATIONAL &amp; INTERNATIONAL ARENA
-        </div>
-        <h2 className="text-3xl md:text-5xl font-extrabold font-heading text-white">
-          HACKATHON <span className="text-gradient-gold">CHAMPIONS</span>
-        </h2>
-      </motion.div>
+        <SceneHeader
+          folio="05"
+          kicker="National & International Arena"
+          title={['Hackathon', 'Champions']}
+          accentLine={1}
+          tone="oxblood"
+        />
 
-      {/* Featured spotlight */}
-      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-        {/* Photo */}
-        <motion.div
-          initial={{ x: -30, opacity: 0 }}
-          animate={isActive ? { x: 0, opacity: 1 } : { x: -30, opacity: 0 }}
-          transition={{ duration: 0.7, delay: 0.15 }}
-          className={`lg:col-span-7 relative rounded-2xl overflow-hidden border ${accent.border} shadow-[0_0_40px_rgba(6,182,212,0.15)]`}
-        >
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={feature.imageKey}
-              src={imageUrl}
-              onError={(e) => {
-                e.currentTarget.src = presentationData.heroImages.hackathon;
-              }}
-              alt={row.competition}
-              initial={{ opacity: 0, scale: 1.04 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.6 }}
-              className="w-full h-[300px] md:h-[360px] object-cover"
-            />
-          </AnimatePresence>
-
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent flex flex-col justify-end p-5">
-            <span className={`inline-block px-3 py-1 rounded-full ${accent.chip} text-[10px] font-black uppercase w-max mb-2`}>
-              {row.badge}
-            </span>
-            <h3 className="text-xl md:text-2xl font-extrabold font-heading text-white leading-tight">
-              {row.competition}
-            </h3>
-            <p className={`text-xs font-semibold ${accent.text}`}>
-              {row.prizeDisplay} &bull; {row.level} Level
-            </p>
-          </div>
-
-          {/* Carousel controls */}
-          <button
-            onClick={() => go(-1)}
-            aria-label="Previous hackathon"
-            className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-950/80 border border-slate-700 text-slate-200 hover:bg-slate-800 transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => go(1)}
-            aria-label="Next hackathon"
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-950/80 border border-slate-700 text-slate-200 hover:bg-slate-800 transition-colors"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-
-          {/* Dots */}
-          <div className="absolute bottom-3 right-4 flex gap-1.5">
-            {features.map((f, i) => (
-              <button
-                key={f.imageKey}
-                onClick={() => setActiveIdx(i)}
-                aria-label={`Show ${f.competition}`}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === safeIdx ? 'w-5 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/70'
-                }`}
+        <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-stretch">
+          {/* Plate */}
+          <div className={`lg:col-span-7 relative overflow-hidden border-2 ${ink.border}`}>
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={feature.imageKey}
+                src={imageUrl}
+                onError={(e) => {
+                  e.currentTarget.src = presentationData.heroImages.hackathon;
+                }}
+                alt={row.competition}
+                initial={{ opacity: 0, scale: 1.03 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6 }}
+                className="absolute inset-0 w-full h-full object-cover"
               />
-            ))}
-          </div>
-        </motion.div>
+            </AnimatePresence>
+            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-transparent" />
 
-        {/* Details */}
-        <motion.div
-          initial={{ x: 30, opacity: 0 }}
-          animate={isActive ? { x: 0, opacity: 1 } : { x: 30, opacity: 0 }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-          className="lg:col-span-5"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={row.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.4 }}
-              className="h-full"
+            <div className="relative z-10 flex flex-col justify-end p-5 md:p-7 gap-2 min-h-[300px] md:min-h-[400px]">
+              <span className={`w-max px-3 py-1 font-mono text-xs font-bold tracking-[0.16em] uppercase ${ink.chip}`}>
+                {row.badge}
+              </span>
+              <h3 className="font-display font-extrabold text-parchment text-2xl md:text-4xl leading-[0.95]">
+                {row.competition}
+              </h3>
+              <p className={`font-mono text-sm font-bold tracking-[0.14em] uppercase ${ink.text}`}>
+                {row.level} · {row.prizeDisplay}
+              </p>
+            </div>
+
+            <button
+              onClick={() => go(-1)}
+              aria-label="Previous win"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 border border-line-bright bg-ink/85 text-parchment hover:bg-ink transition-colors"
             >
-              <GlassCard variant="cyan" className="h-full p-5 flex flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <Trophy className={`w-4 h-4 ${accent.text}`} />
-                  <span className="text-[9px] font-black tracking-widest text-slate-400 uppercase">
-                    {row.category || 'Innovation'}
-                  </span>
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => go(1)}
+              aria-label="Next win"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 border border-line-bright bg-ink/85 text-parchment hover:bg-ink transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Citation */}
+          <div className="lg:col-span-5 flex flex-col">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={row.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.35 }}
+                className="flex flex-col gap-5 flex-1"
+              >
+                <div className={`font-display font-extrabold text-4xl md:text-5xl leading-none ${ink.text}`}>
+                  {row.prizeDisplay}
                 </div>
 
-                <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+                <p className="font-body font-medium text-parchment text-base md:text-lg leading-relaxed">
                   {row.shortDesc}
                 </p>
 
-                <div className="space-y-2 pt-2 border-t border-white/10">
-                  <div className="flex items-start gap-2">
-                    <Users className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
-                        {row.students.length > 1 ? 'Team' : 'Student'}
-                      </div>
-                      <div className="text-xs font-semibold text-slate-100">
-                        {row.students.join(', ')}
-                        {row.teamName ? ` — ${row.teamName}` : ''}
-                      </div>
+                <dl className="flex flex-col mt-auto">
+                  {citation.map(([k, v]) => (
+                    <div key={k} className="flex gap-4 justify-between items-baseline py-2 border-t border-line">
+                      <dt className="font-mono text-[11px] font-bold tracking-[0.16em] uppercase text-parchment-faint shrink-0">
+                        {k}
+                      </dt>
+                      <dd className="font-body font-semibold text-parchment text-sm md:text-base text-right">
+                        {v}
+                      </dd>
                     </div>
-                  </div>
+                  ))}
+                </dl>
+              </motion.div>
+            </AnimatePresence>
 
-                  <div className="flex items-start gap-2">
-                    <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
-                        Organiser &amp; Venue
-                      </div>
-                      <div className="text-xs font-semibold text-slate-100">{row.organizer}</div>
-                      <div className="text-[10px] text-slate-400">{row.location}</div>
-                    </div>
-                  </div>
-
-                  {row.date && (
-                    <div className="flex items-start gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
-                      <div>
-                        <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
-                          Date
-                        </div>
-                        <div className="text-xs font-semibold text-slate-100">{row.date}</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-auto pt-2">
-                  <div className={`text-2xl font-extrabold font-heading ${accent.text}`}>
-                    {row.prizeDisplay}
-                  </div>
-                  <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
-                    Prize Won
-                  </div>
-                </div>
-              </GlassCard>
-            </motion.div>
-          </AnimatePresence>
+            {/* Plate selector */}
+            <div className="flex gap-2 pt-5">
+              {features.map((f, i) => (
+                <button
+                  key={f.imageKey}
+                  onClick={() => setActiveIdx(i)}
+                  aria-label={`Show ${f.competition}`}
+                  className={`h-[5px] flex-1 transition-colors ${
+                    i === safeIdx ? (INKS[f.accent] || INKS.oxblood).bg : 'bg-line hover:bg-line-bright'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,141 +1,139 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
-import { GlassCard } from '../ui/GlassCard';
-import { CalendarDays, Trophy, Mic, Sparkles } from 'lucide-react';
+import { stage, fadeUp } from '../../lib/motion';
+import { SceneHeader } from '../ui/SceneHeader';
+import { Panel } from '../ui/Panel';
 
-const CATEGORY_STYLE = {
-  Hackathon: 'bg-amber-500/15 border-amber-500/40 text-amber-300',
-  Workshop: 'bg-purple-500/15 border-purple-500/40 text-purple-300',
-  'Full-Stack Challenge': 'bg-cyan-500/15 border-cyan-500/40 text-cyan-300',
-  'Industry Interaction': 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300',
-  'Coding Competition': 'bg-blue-500/15 border-blue-500/40 text-blue-300'
+// Chapter ink: sapphire. Five events, each given its own ink so the page
+// reads as a programme of distinct occasions rather than a uniform grid.
+// Dates are real and ordered by the department's calendar, so they lead.
+const EVENT_INK = ['oxblood', 'sapphire', 'verdigris', 'brass', 'oxblood'];
+
+const INK_TEXT = {
+  brass: 'text-brass-bright',
+  oxblood: 'text-oxblood-bright',
+  verdigris: 'text-verdigris-bright',
+  sapphire: 'text-sapphire-bright'
 };
 
 export const Scene06Events = ({ isActive }) => {
   const events = presentationData.events;
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center p-4 md:p-8 overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-1/3 right-1/4 w-[480px] h-[480px] rounded-full bg-purple-500/10 blur-[150px] pointer-events-none" />
+    <div className="relative w-full min-h-full overflow-hidden">
+      <span className="folio-ghost absolute -top-[0.08em] right-2 md:right-10 text-[40vw] md:text-[24vw] text-sapphire/[0.08]">
+        06
+      </span>
 
-      {/* Title */}
       <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={isActive ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center max-w-3xl mb-5 space-y-2 z-10 shrink-0"
+        variants={stage}
+        initial="hidden"
+        animate={isActive ? 'show' : 'hidden'}
+        className="relative z-10 min-h-full flex flex-col justify-center px-7 md:px-16 py-12 gap-8 max-w-7xl"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider">
-          <CalendarDays className="w-4 h-4" />
-          DEPARTMENT ACTIVITY CALENDAR
-        </div>
-        <h2 className="text-3xl md:text-5xl font-extrabold font-heading text-white">
-          EVENTS &amp; <span className="text-gradient-cyan">INITIATIVES</span>
-        </h2>
-        <p className="text-xs md:text-sm text-slate-400 font-medium">
-          {events.length} flagship events hosted by the Department of Information Technology
-        </p>
-      </motion.div>
+        <SceneHeader
+          folio="06"
+          kicker="Department Programme"
+          title={['Events &', 'Initiatives']}
+          accentLine={1}
+          tone="sapphire"
+          lead={`${events.length} flagship events hosted this academic year.`}
+        />
 
-      {/* Event cards */}
-      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-4">
-        {events.map((ev, idx) => (
-          <motion.div
-            key={ev.id}
-            initial={{ y: 28, opacity: 0 }}
-            animate={isActive ? { y: 0, opacity: 1 } : { y: 28, opacity: 0 }}
-            transition={{ duration: 0.55, delay: idx * 0.12 }}
-            className={idx === events.length - 1 && events.length % 2 === 1 ? 'md:col-span-2' : ''}
-          >
-            <GlassCard className="h-full p-5 space-y-3 hover:border-cyan-500/50 group">
-              {/* Header */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="text-base md:text-lg font-extrabold font-heading text-white group-hover:text-cyan-300 transition-colors leading-snug">
-                    {ev.name}
-                  </h3>
-                  <p className="text-[11px] text-slate-400 font-medium leading-snug">
-                    {ev.subtitle}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {events.map((ev, idx) => {
+            const accent = EVENT_INK[idx % EVENT_INK.length];
+            const inkText = INK_TEXT[accent];
+            const isLast = idx === events.length - 1 && events.length % 2 === 1;
+
+            return (
+              <motion.div
+                key={ev.id}
+                variants={fadeUp}
+                className={isLast ? 'md:col-span-2' : ''}
+              >
+                <Panel accent={accent} variant="wash" padding="p-5 md:p-6" className="h-full flex flex-col gap-4">
+                  {/* Date leads — this is a calendar */}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <h3 className="font-display font-extrabold text-parchment text-xl md:text-2xl leading-[1.05]">
+                        {ev.name}
+                      </h3>
+                      <p className="font-body text-parchment-dim text-sm md:text-base mt-1 leading-snug">
+                        {ev.subtitle}
+                      </p>
+                    </div>
+                    <span className={`shrink-0 font-mono text-sm md:text-base font-bold tracking-[0.1em] tabular-lining ${inkText}`}>
+                      {ev.dateShort}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase ${inkText}`}>
+                      {ev.category}
+                    </span>
+                    <span className="text-parchment-faint select-none">·</span>
+                    <span className="font-mono text-[11px] font-semibold tracking-[0.12em] uppercase text-parchment-dim">
+                      {ev.highlight}
+                    </span>
+                  </div>
+
+                  <p className="font-body font-medium text-parchment text-sm md:text-base leading-relaxed">
+                    {ev.desc}
                   </p>
-                </div>
-                <span className="shrink-0 px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-[10px] font-mono font-bold text-cyan-400">
-                  {ev.dateShort}
-                </span>
-              </div>
 
-              {/* Category + highlight */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span
-                  className={`px-2.5 py-0.5 rounded-full border text-[9px] font-black uppercase tracking-wider ${
-                    CATEGORY_STYLE[ev.category] || 'bg-slate-800 border-slate-700 text-slate-300'
-                  }`}
-                >
-                  {ev.category}
-                </span>
-                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400">
-                  <Sparkles className="w-3 h-3 text-cyan-400" />
-                  {ev.highlight}
-                </span>
-              </div>
+                  {ev.meta && (
+                    <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-parchment-faint">
+                      {ev.meta}
+                    </p>
+                  )}
 
-              <p className="text-xs text-slate-300 leading-relaxed">{ev.desc}</p>
-
-              {ev.meta && (
-                <p className="text-[10px] font-semibold text-amber-300/80 italic">{ev.meta}</p>
-              )}
-
-              {/* Winners */}
-              {ev.winners && (
-                <div className="space-y-1.5 pt-1 border-t border-slate-800">
-                  <div className="flex items-center gap-1.5 pt-1.5">
-                    <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                    <span className="text-[9px] font-black tracking-widest text-slate-400 uppercase">
-                      Winners
-                    </span>
-                  </div>
-                  {ev.winners.map((w) => (
-                    <div
-                      key={w.team}
-                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-950/70 border border-slate-800"
-                    >
-                      <span className="text-sm shrink-0">{w.medal}</span>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[11px] font-bold text-slate-100 truncate">
-                          {w.team}
-                        </div>
-                        <div className="text-[9px] text-slate-500 truncate">{w.project}</div>
+                  {ev.winners && (
+                    <div className="mt-auto pt-1">
+                      <div className="font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-parchment-faint pb-1">
+                        Winners
                       </div>
+                      {ev.winners.map((w) => (
+                        <div
+                          key={w.team}
+                          className="flex items-baseline gap-3 py-1.5 border-t border-line"
+                        >
+                          <span className="text-base shrink-0 leading-none">{w.medal}</span>
+                          <span className="font-body font-bold text-parchment text-sm md:text-base shrink-0">
+                            {w.team}
+                          </span>
+                          <span className="font-body text-parchment-dim text-xs md:text-sm truncate">
+                            {w.project}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  )}
 
-              {/* Resource persons */}
-              {ev.people && (
-                <div className="space-y-1.5 pt-1 border-t border-slate-800">
-                  <div className="flex items-center gap-1.5 pt-1.5">
-                    <Mic className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-[9px] font-black tracking-widest text-slate-400 uppercase">
-                      Resource {ev.people.length > 1 ? 'Persons' : 'Person'}
-                    </span>
-                  </div>
-                  {ev.people.map((p) => (
-                    <div
-                      key={p.name}
-                      className="px-2.5 py-1.5 rounded-lg bg-slate-950/70 border border-slate-800"
-                    >
-                      <div className="text-[11px] font-bold text-slate-100">{p.name}</div>
-                      <div className="text-[9px] text-slate-500 leading-snug">{p.role}</div>
+                  {ev.people && (
+                    <div className="mt-auto pt-1">
+                      <div className="font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-parchment-faint pb-1">
+                        Resource {ev.people.length > 1 ? 'Persons' : 'Person'}
+                      </div>
+                      {ev.people.map((p) => (
+                        <div key={p.name} className="py-1.5 border-t border-line">
+                          <div className="font-body font-bold text-parchment text-sm md:text-base">
+                            {p.name}
+                          </div>
+                          <div className="font-body text-parchment-dim text-xs leading-snug">
+                            {p.role}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-            </GlassCard>
-          </motion.div>
-        ))}
-      </div>
+                  )}
+                </Panel>
+              </motion.div>
+            );
+          })}
+        </div>
+      </motion.div>
     </div>
   );
 };

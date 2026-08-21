@@ -113,11 +113,20 @@ The datasets contain real student names, register numbers, and salary figures. *
 
 ### Styling
 
-Tailwind v4 through `@tailwindcss/vite` — configured entirely via `@import "tailwindcss"` in [index.css](src/index.css). **There is no `tailwind.config.js`**; extend by writing CSS in `index.css`, not by editing a config.
+The visual identity is **Illuminated Ledger** — a leather-bound convocation record lit with jewel pigments and real gold leaf. It came from the `design-upgrade` branch (merged) and was then pushed for contrast and weight, because the audience is parents in a hall, not designers at a monitor.
 
-Shared visual vocabulary lives in `index.css` as plain classes, used heavily across scenes: `.glass-panel`, `.gold-glass-card`, `.glass-card-hover`, `.text-gradient-cyan` / `-gold` / `-emerald`, `.glow-blue`, `.glow-gold`, `.animate-float`, `.animate-pulse-glow`, `.no-scrollbar`. `GlassCard` wraps these behind a `variant` prop (`default` | `gold` | `cyan` | `dark`).
+Tailwind v4 through `@tailwindcss/vite`. **There is no `tailwind.config.js`** — the palette and type roles are defined as `@theme` tokens in [index.css](src/index.css), which is what generates `text-brass-bright`, `bg-ink-raised`, `border-line` and friends. Extend by adding tokens there, never by adding a config file, and never by reaching for stock Tailwind colours (`slate-*`, `cyan-*`, `amber-*`) — they are off-palette and will look wrong.
 
-Design is **dark-only** — `<html class="dark">` and `body` styles are fixed in [index.html](index.html); there is no light mode to support. Fonts (Outfit for headings via `.font-heading` and `h1`–`h6`, Plus Jakarta Sans for body) load from the Google Fonts CDN in `index.html`. Scrollbars are hidden globally on purpose, so scroll position must be communicated visually (progress bar, auto-scroll) rather than by a scrollbar.
+- **Ground:** `ink` / `ink-raised` / `ink-deep`.
+- **Text:** `parchment` is the working text colour. `parchment-dim` is for metadata only, `parchment-faint` for the faintest annotation. If a parent needs to read it, it is `parchment`.
+- **Jewel inks:** `brass`, `oxblood`, `verdigris`, `sapphire`, each with `-soft` and `-bright` variants. `-bright` is the projector-legible one used for headings and figures.
+- **Each scene is assigned one chapter ink** so the deck visibly changes colour as it advances: 01 brass, 02 sapphire, 03 verdigris, 04 brass, 05 oxblood, 06 sapphire, 07 verdigris, 08 brass.
+
+`.gilt` is the signature: a layered metallic gradient with a slow specular sweep, clipped to text (`.gilt-bar` for rules and blocks). **Reserve it for the single most important figure in a scene** — the top GPA, the highest package. Using it more than once per scene destroys the effect.
+
+Type: Fraunces (display, `font-display`, set at 700–800), Source Serif 4 (body, `font-body`), IBM Plex Mono (data and labels, `font-mono`). Loaded from the Google Fonts CDN in [index.html](index.html); add weights there before using them. `.tabular-lining` for any figure that sits in a column.
+
+Motion is centralised in [lib/motion.js](src/lib/motion.js) — `stage` (parent, staggers children), `fadeUp`, `riseMask`, `drawRule`, `drawRuleV`. Scenes compose these as framer-motion `variants` and drive them with `animate={isActive ? 'show' : 'hidden'}`; don't hand-roll per-element delays. `prefers-reduced-motion` is honoured globally, including the gilt sweep.
 
 Images live in `public/assets/` and are referenced by absolute path (`/assets/cit_logo.png`), reached either through `presentationData.heroImages` or as the fallback argument to `getAssetImageUrl` — not by importing from `src/assets/`.
 
@@ -125,8 +134,14 @@ Images live in `public/assets/` and are referenced by absolute path (`/assets/ci
 
 `src/components/ui/` is deliberately small — only what the 8 scenes use:
 
-- `GlassCard` — the card primitive, used by 7 of 8 scenes.
-- `AnimatedCounter` — rAF ease-out count-up; resets when `isActive` goes false. Supports `prefix`/`suffix`/`decimals`.
-- `CompanyLogo` — hand-built inline SVG/CSS marks keyed by company name in a `switch`, with a generic fallback. Add new recruiters as new cases.
+- `SceneHeader` — the recurring masthead: drawn rule + mono kicker in the chapter ink, then a heavy display headline revealing line by line. `accentLine` inks one line of the title. Every content scene opens with this.
+- `Figure` — a struck number over a tracked mono label. Takes `tone`, `size`, and `gilt`; wraps `AnimatedCounter` when the value is numeric.
+- `Panel` — a bordered leaf with a top rule. `variant="wash"` tints lightly, `variant="block"` carries real colour weight.
+- `LedgerRow` — label left, figure right, for anything that is fundamentally a record.
+- `MaskReveal` — wraps a line of text so the parent `stage` drives its rise.
+- `AnimatedCounter` — rAF ease-out count-up; resets when `isActive` goes false.
+- `CompanyLogo` — Microsoft keeps its authentic four-square mark; every other recruiter resolves to an initials seal in the given `tone`, so a new company needs no code.
 
-Components for retired scenes (`GlobeVisual`, `ReachMapVisual`, `PhotoModal`, `Marquee`, `HighestPackageSpotlight`, `PlacementDirectoryModal`, `CinematicAchievementSpotlight`) were deleted — recover from git history rather than rewriting if a scene comes back.
+`Atmosphere` (static paper grain + vignette) and `FolioSpine` (the permanent left-edge book spine carrying scene title and progress) live in `src/components/presentation/` and are mounted once by the shell.
+
+Components for retired scenes (`GlassCard`, `GlobeVisual`, `ReachMapVisual`, `PhotoModal`, `Marquee`, `HighestPackageSpotlight`, `PlacementDirectoryModal`, `CinematicAchievementSpotlight`) were deleted — recover from git history rather than rewriting if a scene comes back.

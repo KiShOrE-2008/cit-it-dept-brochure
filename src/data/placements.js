@@ -159,6 +159,12 @@ export const recruiterList = [
  * peak offers and the department's largest-volume recruiters instead of skewing
  * entirely to single-student super-dream offers. Ties break on package, then name.
  */
+// Recruiters whose stored name is an abbreviation a parent reading the slide
+// would not recognise. They stay in the dataset and in every total; they are
+// only held out of the named top-company cards. Replace an entry here with the
+// company's full name instead if one is confirmed.
+export const opaqueCompanyNames = ['MF'];
+
 export const getTopCompanies = (limit = 5, records = placementsData) => {
   const toNum = (pkg) =>
     typeof pkg === 'number' ? pkg : (parseInt(String(pkg || '').replace(/[^0-9]/g, ''), 10) || 0);
@@ -174,6 +180,7 @@ export const getTopCompanies = (limit = 5, records = placementsData) => {
   });
 
   return [...byCompany.values()]
+    .filter((c) => !opaqueCompanyNames.includes(c.company))
     .sort(
       (a, b) =>
         (b.highest + b.count * 3) - (a.highest + a.count * 3) ||
