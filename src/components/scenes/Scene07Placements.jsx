@@ -2,91 +2,64 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
-import { GlassCard } from '../ui/GlassCard';
-import { Marquee } from '../ui/Marquee';
-import { Briefcase, TrendingUp, Building, Award, CheckCircle } from 'lucide-react';
+import { RecruiterList } from '../ui/RecruiterList';
+import { SceneHeader } from '../ui/SceneHeader';
+import { stage, fadeUp } from '../../lib/motion';
 
 export const Scene07Placements = ({ isActive }) => {
   const p = presentationData.placements;
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center p-6 md:p-10 overflow-hidden">
-      {/* Title */}
+    <div className="relative w-full h-full overflow-y-auto">
       <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={isActive ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center max-w-3xl mb-6 space-y-2 z-10"
+        variants={stage}
+        initial="hidden"
+        animate={isActive ? 'show' : 'hidden'}
+        className="min-h-full flex flex-col justify-center px-8 md:px-16 py-14 gap-12 max-w-6xl"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-          <Briefcase className="w-4 h-4" />
-          CAREER & CAMPUS RECRUITMENT
-        </div>
-        <h2 className="text-3xl md:text-5xl font-extrabold font-heading text-white">
-          PLACEMENT <span className="text-gradient-emerald">EXCELLENCE</span>
-        </h2>
-      </motion.div>
+        <SceneHeader folio="07 / 14" kicker="Career & Recruitment" title="Placement Excellence" tone="verdigris" />
 
-      {/* Main Placement Metrics & Sector breakdown */}
-      <div className="relative z-10 max-w-6xl w-full space-y-6">
-        {/* Top 3 High-Impact Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={isActive ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <GlassCard variant="cyan" className="p-6 text-center space-y-2">
-              <div className="text-xs font-extrabold text-cyan-400 uppercase tracking-widest">PLACEMENT SUCCESS</div>
-              <div className="text-5xl font-black text-cyan-300 font-heading">
-                <AnimatedCounter end={95.4} decimals={1} suffix="%" isActive={isActive} />
-              </div>
-              <p className="text-xs text-slate-300 font-semibold">Consistent 95%+ Placed Batch Record</p>
-            </GlassCard>
-          </motion.div>
-
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={isActive ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <GlassCard variant="gold" className="p-6 text-center space-y-2">
-              <div className="text-xs font-extrabold text-amber-400 uppercase tracking-widest">HIGHEST CTC OFFERED</div>
-              <div className="text-5xl font-black text-amber-300 font-heading">
-                ₹<AnimatedCounter end={52} suffix=" LPA" isActive={isActive} />
-              </div>
-              <p className="text-xs text-amber-200/80 font-semibold">Super Dream Product Companies</p>
-            </GlassCard>
-          </motion.div>
-
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={isActive ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <GlassCard className="p-6 text-center space-y-2 border-emerald-500/30">
-              <div className="text-xs font-extrabold text-emerald-400 uppercase tracking-widest">AVERAGE CTC BATCH</div>
-              <div className="text-5xl font-black text-emerald-300 font-heading">
-                ₹<AnimatedCounter end={8.5} decimals={1} suffix=" LPA" isActive={isActive} />
-              </div>
-              <p className="text-xs text-slate-300 font-semibold">High Starting Salary Benchmarks</p>
-            </GlassCard>
-          </motion.div>
-        </div>
-
-        {/* Corporate Recruiter Marquee Banner */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={isActive ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="space-y-2"
-        >
-          <div className="text-xs font-extrabold text-slate-400 uppercase tracking-widest text-center">
-            TOP RECRUITING CORPORATE PARTNERS
+        {/* A scoreboard line: three figures of deliberately unequal weight */}
+        <motion.div variants={fadeUp} className="flex flex-wrap items-baseline gap-x-12 gap-y-6 border-y border-line py-8">
+          <div>
+            <div className="font-display text-6xl md:text-7xl text-verdigris-soft tabular-lining">
+              <AnimatedCounter end={95.4} decimals={1} suffix="%" isActive={isActive} />
+            </div>
+            <div className="font-mono text-sm tracking-[0.15em] uppercase text-parchment-dim mt-2">Placement Success</div>
           </div>
-          <Marquee items={p.recruiters} speed={28} />
+          <div>
+            <div className="font-display text-4xl md:text-5xl text-brass-soft tabular-lining">
+              ₹<AnimatedCounter end={52} suffix=" LPA" isActive={isActive} />
+            </div>
+            <div className="font-mono text-sm tracking-[0.15em] uppercase text-parchment-dim mt-2">Highest CTC</div>
+          </div>
+          <div>
+            <div className="font-display text-4xl md:text-5xl text-oxblood-soft tabular-lining">
+              ₹<AnimatedCounter end={8.5} decimals={1} suffix=" LPA" isActive={isActive} />
+            </div>
+            <div className="font-mono text-sm tracking-[0.15em] uppercase text-parchment-dim mt-2">Average CTC</div>
+          </div>
         </motion.div>
-      </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          {/* Sector breakdown as a ledger, not a bar chart widget */}
+          <motion.div variants={fadeUp} className="md:col-span-5">
+            <span className="font-mono text-sm tracking-[0.15em] uppercase font-medium text-verdigris-soft block mb-2">By Sector</span>
+            {p.sectors.map((s) => (
+              <div key={s.name} className="ledger-row">
+                <span className="font-body text-base text-parchment-dim">{s.name}</span>
+                <span className="font-mono text-base text-parchment tabular-lining">{s.pct}%</span>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Recruiting partners as a masthead */}
+          <motion.div variants={fadeUp} className="md:col-span-7">
+            <span className="font-mono text-sm tracking-[0.15em] uppercase font-medium text-verdigris-soft block mb-3">Recruiting Partners</span>
+            <RecruiterList items={p.recruiters} />
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   );
 };

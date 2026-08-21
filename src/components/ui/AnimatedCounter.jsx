@@ -32,7 +32,7 @@ export const AnimatedCounter = ({ end, duration = 2000, suffix = '', prefix = ''
   const formattedValue = decimals > 0 ? count.toFixed(decimals) : Math.floor(count);
 
   return (
-    <span className="inline-block tracking-tight font-extrabold font-heading">
+    <span className="inline-block font-display tabular-lining tracking-tight">
       {prefix}{formattedValue}{suffix}
     </span>
   );

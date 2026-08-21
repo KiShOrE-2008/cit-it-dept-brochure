@@ -1,69 +1,60 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
-import { GlassCard } from '../ui/GlassCard';
-import { Calendar, CheckCircle, Flame, MapPin, Radio, Users } from 'lucide-react';
+import { stage, fadeUp, drawRule } from '../../lib/motion';
+import { SceneHeader } from '../ui/SceneHeader';
+
+const dotTones = ['bg-brass', 'bg-oxblood', 'bg-verdigris', 'bg-sapphire', 'bg-brass'];
+const textTones = ['text-brass', 'text-oxblood-soft', 'text-verdigris-soft', 'text-sapphire-soft', 'text-brass'];
 
 export const Scene06EventsTimeline = ({ isActive }) => {
+  const events = presentationData.eventsTimeline;
+
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center p-6 md:p-12 overflow-hidden">
-      {/* Title */}
+    <div className="relative w-full h-full overflow-y-auto">
       <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={isActive ? { y: 0, opacity: 1 } : { y: -30, opacity: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center max-w-3xl mb-8 space-y-2 z-10"
+        variants={stage}
+        initial="hidden"
+        animate={isActive ? 'show' : 'hidden'}
+        className="min-h-full flex flex-col justify-center px-8 md:px-16 py-14 gap-14 max-w-6xl"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider">
-          <Calendar className="w-4 h-4" />
-          ACADEMIC CALENDAR & ACTIVITY
+        <SceneHeader folio="06 / 14" kicker="Academic Calendar" title="Events & the Timeline of Activity" tone="oxblood" />
+
+        {/* A real timeline: one rule, five markers, alternating above/below */}
+        <div className="hidden md:grid grid-cols-5 gap-4 relative pt-2">
+          <motion.div variants={drawRule} className="absolute top-1/2 left-0 right-0 h-px bg-line origin-left" />
+          {events.map((item, idx) => {
+            const above = idx % 2 === 0;
+            return (
+              <motion.div key={item.quarter} variants={fadeUp} className="relative flex flex-col items-start">
+                <div className={`flex flex-col gap-2 ${above ? 'order-1 pb-8' : 'order-3 pt-8'}`}>
+                  <h4 className="font-display text-lg leading-snug text-parchment">{item.title}</h4>
+                  <p className="font-body text-sm text-parchment-dim leading-relaxed">{item.desc}</p>
+                </div>
+                <div className="order-2 relative w-full flex items-center">
+                  <span className={`w-2.5 h-2.5 rounded-full ${dotTones[idx % dotTones.length]}`} />
+                </div>
+                <div className={`${above ? 'order-3 pt-3' : 'order-1 pb-3'} font-mono text-sm tracking-[0.12em] uppercase font-medium ${textTones[idx % textTones.length]}`}>
+                  {item.quarter}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
-        <h2 className="text-3xl md:text-5xl font-extrabold font-heading text-white">
-          DEPARTMENT <span className="text-gradient-cyan">EVENTS & TIMELINE</span>
-        </h2>
-      </motion.div>
 
-      {/* Horizontal / Vertical Timeline Flow */}
-      <div className="relative z-10 max-w-6xl w-full">
-        {/* Timeline connector line */}
-        <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-500/10 via-cyan-500/50 to-blue-500/10 -translate-y-1/2" />
-
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
-          {presentationData.eventsTimeline.map((item, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ y: idx % 2 === 0 ? -30 : 30, opacity: 0 }}
-              animate={isActive ? { y: 0, opacity: 1 } : { y: idx % 2 === 0 ? -30 : 30, opacity: 0 }}
-              transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="relative"
-            >
-              <GlassCard className="h-full flex flex-col justify-between p-5 hover:border-cyan-500/50 group">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">
-                      {item.quarter}
-                    </span>
-                    <span className="text-xs font-extrabold text-amber-400 font-heading">{item.year}</span>
-                  </div>
-
-                  <h4 className="text-sm font-bold text-white font-heading group-hover:text-cyan-300 transition-colors leading-snug">
-                    {item.title}
-                  </h4>
-
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center gap-2 text-[11px] font-semibold text-cyan-400">
-                  <CheckCircle className="w-3.5 h-3.5" />
-                  Successfully Organized
-                </div>
-              </GlassCard>
+        {/* Mobile: a plain chronological ledger */}
+        <div className="md:hidden">
+          {events.map((item, idx) => (
+            <motion.div key={item.quarter} variants={fadeUp} className="py-4 border-t border-line last:border-b flex gap-4">
+              <span className={`font-mono text-sm tracking-[0.12em] uppercase shrink-0 pt-0.5 w-16 ${textTones[idx % textTones.length]}`}>{item.quarter}</span>
+              <div>
+                <h4 className="font-display text-lg text-parchment">{item.title}</h4>
+                <p className="font-body text-sm text-parchment-dim leading-relaxed mt-1">{item.desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

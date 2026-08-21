@@ -62,8 +62,8 @@ export const GlobeVisual = () => {
 
         // Draw dot
         ctx.beginPath();
-        ctx.arc(screenX, screenY, 2 * scale, 0, Math.PI * 2);
-        ctx.fillStyle = z1 > 0 ? `rgba(56, 189, 248, ${alpha})` : `rgba(2, 132, 199, ${alpha * 0.4})`;
+        ctx.arc(screenX, screenY, 1.6 * scale, 0, Math.PI * 2);
+        ctx.fillStyle = z1 > 0 ? `rgba(91, 143, 212, ${alpha})` : `rgba(245, 238, 218, ${alpha * 0.35})`;
         ctx.fill();
 
         // Connect some dots to form network lines
@@ -81,8 +81,8 @@ export const GlobeVisual = () => {
             ctx.beginPath();
             ctx.moveTo(screenX, screenY);
             ctx.lineTo(nscreenX, nscreenY);
-            ctx.strokeStyle = `rgba(56, 189, 248, ${alpha * 0.25})`;
-            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = `rgba(91, 143, 212, ${alpha * 0.25})`;
+            ctx.lineWidth = 0.7;
             ctx.stroke();
           }
         }
@@ -102,10 +102,10 @@ export const GlobeVisual = () => {
   return (
     <div className="relative w-full h-full min-h-[350px] flex items-center justify-center">
       <canvas ref={canvasRef} className="w-full h-full absolute inset-0" />
-      {/* Central glowing core badge */}
-      <div className="relative z-10 p-6 rounded-full bg-slate-900/80 backdrop-blur-md border border-cyan-500/40 text-center shadow-[0_0_50px_rgba(6,182,212,0.3)] animate-pulse-glow">
-        <div className="text-3xl font-extrabold text-cyan-400 font-heading">ICCIIT '25</div>
-        <div className="text-xs font-semibold text-slate-300">Scopus & IEEE Sponsored</div>
+      {/* Central static seal */}
+      <div className="relative z-10 px-8 py-6 rounded-full border border-sapphire/50 bg-ink-deep/70 text-center">
+        <div className="text-2xl font-display text-sapphire-soft">ICCIIT &apos;25</div>
+        <div className="text-sm font-mono uppercase tracking-[0.15em] text-parchment-dim mt-1">Scopus &amp; IEEE Sponsored</div>
       </div>
     </div>
   );

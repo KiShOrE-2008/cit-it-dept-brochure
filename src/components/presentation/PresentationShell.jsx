@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { BackgroundCanvas } from './BackgroundCanvas';
-import { ProgressHeader } from './ProgressHeader';
+import { Atmosphere } from './Atmosphere';
+import { FolioSpine } from './FolioSpine';
 import { ControlDeck } from './ControlDeck';
 
 import { Scene01Welcome } from '../scenes/Scene01Welcome';
@@ -152,28 +152,26 @@ export const PresentationShell = () => {
   return (
     <div
       onWheel={handleWheel}
-      className="relative w-screen h-screen overflow-hidden bg-slate-950 select-none"
+      className="relative w-screen h-screen overflow-hidden bg-ink select-none"
     >
-      {/* Dynamic Floating Particles Canvas */}
-      <BackgroundCanvas />
+      <Atmosphere />
 
-      {/* Top Header Bar */}
-      <ProgressHeader
+      <FolioSpine
         currentScene={currentScene}
         totalScenes={totalScenes}
         sceneTitle={sceneTitles[currentScene]}
         progressPct={progressPct}
       />
 
-      {/* Main Fullscreen Scene viewport with cinematic slide transition */}
-      <main className="relative w-full h-full z-10">
+      {/* Main scene viewport — a leaf being turned, not a slide sliding in */}
+      <main className="relative w-full h-full z-10 pl-0 md:pl-24 pt-12 md:pt-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScene}
-            initial={{ opacity: 0, scale: 1.04, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: -15 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
             className="w-full h-full"
           >
             {renderSceneContent(currentScene)}
