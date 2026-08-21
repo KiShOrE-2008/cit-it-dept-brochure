@@ -8,7 +8,7 @@ export const presentationData = {
   
   heroImages: {
     logo: "/assets/cit_badge.png",
-    campus: "/assets/cit_campus_hero.png",
+    campus: "/assets/cit_campus_hero.png?v=20260821_2",
     hackathon: "/assets/cit_hackathon_win.png",
     lab: "/assets/cit_lab_hero.png"
   },
