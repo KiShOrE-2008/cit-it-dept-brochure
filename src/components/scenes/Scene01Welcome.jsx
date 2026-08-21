@@ -72,6 +72,21 @@ export const Scene01Welcome = ({ isActive, onStartClick }) => {
           </motion.p>
         </div>
 
+        {/* The address to the room. Spoken to the parents directly, and it
+            says what the next eight minutes contain rather than thanking
+            them in the abstract. */}
+        <motion.div variants={fadeUp} className="flex gap-4 max-w-2xl">
+          <span className="w-[3px] shrink-0 gilt-bar" />
+          <p className="font-body text-parchment text-sm md:text-base leading-relaxed">
+            <span className="font-display font-semibold text-brass-soft text-base md:text-lg">
+              Welcome, and thank you for being here.
+            </span>{' '}
+            What follows is your child&apos;s year in this department, set down as a
+            record — the results they earned, the competitions they won, and the
+            offers those have led to.
+          </p>
+        </motion.div>
+
         {/* What the record shows */}
         <motion.div
           variants={fadeUp}
