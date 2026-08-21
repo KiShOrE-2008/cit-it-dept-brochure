@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { BackgroundCanvas } from './BackgroundCanvas';
-import { ProgressHeader } from './ProgressHeader';
+import { Atmosphere } from './Atmosphere';
+import { FolioSpine } from './FolioSpine';
 import { ControlDeck } from './ControlDeck';
 
 import { Scene01Welcome } from '../scenes/Scene01Welcome';
@@ -170,30 +170,30 @@ export const PresentationShell = () => {
   return (
     <div
       onWheel={handleWheel}
-      className="relative w-screen h-screen overflow-hidden bg-slate-950 select-none"
+      className="relative w-screen h-screen overflow-hidden bg-ink select-none"
     >
-      {/* Dynamic Floating Particles Canvas */}
-      <BackgroundCanvas />
+      <Atmosphere />
 
-      {/* Top Header Bar */}
-      <ProgressHeader
+      <FolioSpine
         currentScene={currentScene}
         totalScenes={totalScenes}
         sceneTitle={sceneTitles[currentScene]}
         progressPct={progressPct}
       />
 
-      {/* Main Fullscreen Scene viewport with motion-graphics video transitions */}
-      <main className="relative w-full h-full z-10 pt-16 pb-20">
+      {/* Main scene viewport — a leaf being turned, not a slide sliding in.
+          The ref and the scroll container stay on this node: the shell's timer
+          drives `scrollTop` here, and `handleWheel` reads its bounds. */}
+      <main className="relative w-full h-full z-10 pl-0 md:pl-24 pt-12 md:pt-0 pb-24">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScene}
             ref={sceneContainerRef}
-            initial={{ opacity: 0, scale: 1.06, filter: "blur(10px)", y: 20 }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, filter: "blur(10px)", y: -20 }}
-            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth no-scrollbar"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth"
           >
             {renderSceneContent(currentScene)}
           </motion.div>
