@@ -56,19 +56,19 @@ scene means renumbering the files that follow it, so that alignment holds:
 
 | # | Scene | Source of truth |
 |---|---|---|
-| 1 |  | none — the greeting to the room, no statistics by design |
-| 2 |  |  |
-| 3 |  |  |
-| 4 |  |  |
-| 5 |  |  |
-| 6 |  | Supabase  +  |
-| 7 |  |  |
-| 8 |  | Supabase  |
-| 9 |  |  |
+| 1 | `Scene01Welcome` | none — the greeting to the room, no statistics by design |
+| 2 | `Scene02Department` | `presentationData` |
+| 3 | `Scene03CollegeDept` | `presentationData` |
+| 4 | `Scene04VisionMission` | `presentationData.vision` |
+| 5 | `Scene05AcademicToppers` | `academicToppers` |
+| 6 | `Scene06Hackathons` | Supabase `achievements` + `hackathonFeatures` |
+| 7 | `Scene07Events` | `presentationData.events` |
+| 8 | `Scene08Placements` | Supabase `placements` |
+| 9 | `Scene09DepartmentGlance` | `presentationData.departmentGlance` |
 
-Speed presets live in : Fast 9s, Normal 22s, Slow 35s per scene.
- divides its own runtime across the four plates, so its
-floor must stay under the Fast preset's share.
+Speed presets live in `ControlDeck`: Fast 9s, Normal 22s, Slow 35s per scene.
+`Scene06Hackathons` divides its own runtime across its four plates, so its
+minimum plate hold must stay under the Fast preset's share.
 
 ### Checking fit
 
