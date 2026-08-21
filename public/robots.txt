@@ -1,0 +1,4 @@
+# This deck carries real student names, marks and offer details.
+# It is published for a specific audience, not for the open web.
+User-agent: *
+Disallow: /
