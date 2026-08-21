@@ -1,7 +1,6 @@
 import { supabase, getStorageImageUrl } from '../lib/supabaseClient';
 import { placementsData as fallbackPlacements } from '../data/placements';
 import { achievementsData as fallbackAchievements } from '../data/achievements';
-import { presentationData as fallbackPresentationData } from '../data/presentationData';
 
 /**
  * Normalize database row objects so camelCase property names match JS expectations
@@ -96,6 +95,6 @@ export const getAchievementsData = async () => {
  * Resolve image URL from Supabase Storage or fallback to local static asset
  */
 export const getAssetImageUrl = (imageKey, localFallbackPath) => {
-  const remoteUrl = getStorageImageUrl('presentation-assets', imageKey);
+  const remoteUrl = getStorageImageUrl('Image', imageKey);
   return remoteUrl || localFallbackPath;
 };

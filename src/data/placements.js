@@ -150,3 +150,36 @@ export const recruiterList = [
   { name: "Sapphire", tier: "Tech Services (₹4–6 LPA)", count: 3 },
   { name: "Orion", tier: "Global Services (₹4–5 LPA)", count: 3 }
 ];
+
+/**
+ * Aggregate placements into per-company cards: how many were placed and the
+ * highest package that company offered. Deliberately returns NO student names.
+ *
+ * Selection score = highestPackage + (studentsPlaced * 3), so the list shows both
+ * peak offers and the department's largest-volume recruiters instead of skewing
+ * entirely to single-student super-dream offers. Ties break on package, then name.
+ */
+export const getTopCompanies = (limit = 5, records = placementsData) => {
+  const toNum = (pkg) =>
+    typeof pkg === 'number' ? pkg : (parseInt(String(pkg || '').replace(/[^0-9]/g, ''), 10) || 0);
+
+  const byCompany = new Map();
+  records.forEach((p) => {
+    if (!p.company) return;
+    const pkg = toNum(p.package);
+    const entry = byCompany.get(p.company) || { company: p.company, count: 0, highest: 0 };
+    entry.count += 1;
+    if (pkg > entry.highest) entry.highest = pkg;
+    byCompany.set(p.company, entry);
+  });
+
+  return [...byCompany.values()]
+    .sort(
+      (a, b) =>
+        (b.highest + b.count * 3) - (a.highest + a.count * 3) ||
+        b.highest - a.highest ||
+        a.company.localeCompare(b.company)
+    )
+    .slice(0, limit)
+    .map((c) => ({ ...c, highestLabel: formatPackage(c.highest) }));
+};

@@ -4,24 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A single-page **cinematic auto-advancing presentation** (not a website) built for the CIT Department of Information Technology Parents' Meeting 2026. It runs fullscreen in a browser, auto-plays through 14 scenes on a timer, and is driven live by a presenter via keyboard/control deck. React 19 + Vite 8 + Tailwind CSS v4 + framer-motion. Plain JSX — no TypeScript, no router, no test framework.
+A single-page **cinematic auto-advancing presentation** (not a website) built for the CIT Department of Information Technology Parents' Meeting 2026. It runs fullscreen in a browser, auto-plays through 8 scenes on a timer, and is driven live by a presenter via keyboard/control deck. React 19 + Vite 8 + Tailwind CSS v4 + framer-motion. Plain JSX — no TypeScript, no router, no test framework.
 
 ## Commands
 
 ```bash
 npm install
-npm i @supabase/supabase-js   # see "Missing dependency" below — required, not optional
-npm run dev                   # Vite dev server with HMR
-npm run build                 # production build to dist/
-npm run preview               # serve the built dist/
-npm run lint                  # oxlint (config in .oxlintrc.json)
+npm run dev       # Vite dev server with HMR
+npm run build     # production build to dist/
+npm run preview   # serve the built dist/
+npm run lint      # oxlint (config in .oxlintrc.json)
 ```
 
 There is no test runner configured — don't invent one or claim tests pass.
 
-### Missing dependency (build-breaking)
-
-`@supabase/supabase-js` is imported by [src/lib/supabaseClient.js](src/lib/supabaseClient.js) but is **absent from `package.json` and `package-lock.json`**. Three scenes (`Scene01Welcome`, `Scene02CollegeDept`, `Scene05Hackathons`) import `getAssetImageUrl` from [dataService.js](src/services/dataService.js), which pulls in `supabaseClient`, so Vite will fail to resolve the import on both `dev` and `build` until the package is installed. Install it (and commit the manifest change) before assuming a build failure is your own doing.
+Lint currently emits 4 known warnings (two unused vars in the seed script, `set-state-in-effect` in `AnimatedCounter`, and `toggleFullscreen` self-capture in `PresentationShell`). Zero errors — treat any *new* warning as yours.
 
 ### Seeding Supabase
 
@@ -47,39 +44,72 @@ The script prefers `SUPABASE_SERVICE_ROLE_KEY`, falling back to `VITE_SUPABASE_A
 
 ### The deck is defined in two places that must stay in sync
 
-All 14 scenes in `src/components/scenes/` are currently wired into the deck, but the deck is not derived from the filesystem. It is defined by two structures inside `PresentationShell` that must be edited **in lockstep**:
+The deck is **not** derived from the filesystem. It is defined by two structures inside `PresentationShell` that must be edited **in lockstep**:
 
 1. `sceneTitles` — the array whose `.length` *is* `totalScenes`, feeding the header and the jump menu.
 2. `renderSceneContent(index)` — the switch mapping index → component.
 
 Adding, removing, or reordering a scene means touching both; a title with no matching case renders a blank scene that still consumes its full `speed` seconds.
 
+Current deck — 8 scenes, filenames aligned to deck order:
+
+| # | Scene | Source of truth |
+|---|---|---|
+| 1 | `Scene01Welcome` | `presentationData` |
+| 2 | `Scene02CollegeDept` | `presentationData` |
+| 3 | `Scene03VisionMission` | `presentationData.vision` |
+| 4 | `Scene04AcademicToppers` | `academicToppers` |
+| 5 | `Scene05Hackathons` | Supabase `achievements` + `hackathonFeatures` |
+| 6 | `Scene06Events` | `presentationData.events` |
+| 7 | `Scene07Placements` | Supabase `placements` |
+| 8 | `Scene08DepartmentGlance` | `presentationData.departmentGlance` |
+
 ### Scene contract
 
 Every scene is a **named** export (`export const SceneNNName = ...`, no default exports anywhere in `src/components/`) taking `{ isActive }` — used to gate framer-motion `animate` props and `AnimatedCounter` restarts. Scenes are self-contained full-height sections that import their own slice of `src/data/` directly; the shell passes no data down. `Scene01Welcome` additionally takes `onStartClick`.
+
+Scenes that read Supabase seed `useState` with the local dataset and overwrite it from an async fetch in `useEffect`, guarded by a `cancelled` flag. This keeps the deck fully functional offline — important for a live presentation where the venue network may not cooperate.
 
 ### Data layer
 
 `src/data/` holds the static, hand-verified datasets and is the source of truth at runtime:
 
-- [presentationData.js](src/data/presentationData.js) — one big object covering college/dept copy, `heroImages`, `stats`, `vision`, `hackathonsList`, `eventsTimeline`, `placements`, `internships`, `conference`, `faculty`, `infrastructure`, `departmentGlance`, `studentCare`, `contact`. Most scenes read from here.
-- [placements.js](src/data/placements.js) — 48 real student placement records, plus `computePlacementMetrics()`, `getHighestPackageData()`, and a curated `recruiterList`.
-- [achievements.js](src/data/achievements.js) — 19 verified competition records grouped by `year` (`"II"` / `"III"` / `"IV"` — Scene04 tabs filter on this field), plus `computeAchievementStats()` and `locationsList` for the map visual.
+- [presentationData.js](src/data/presentationData.js) — college/dept copy, `heroImages`, `stats`, `vision` (quote + 5 `mission` statements), `events` (5 records), `departmentGlance` (9 tiles), plus several keys left over from retired scenes (`internships`, `conference`, `faculty`, `infrastructure`, `studentCare`, `achievements`, `hackathonsList`) that nothing currently renders.
+- [placements.js](src/data/placements.js) — 47 student placement records with **numeric** `package` values, plus `formatPackage()`, `computePlacementMetrics()`, `getHighestPackageData()`, `getTopCompanies()`, and a curated `recruiterList`.
+- [achievements.js](src/data/achievements.js) — 19 competition records grouped by `year` (`"II"`/`"III"`/`"IV"`), plus `computeAchievementStats()` and `locationsList`.
+- [academicToppers.js](src/data/academicToppers.js) — **generated**, see below.
+- [hackathonFeatures.js](src/data/hackathonFeatures.js) — maps storage image keys to achievement rows.
 
-Derived numbers come from `compute*()` helpers called at render time, never from stored aggregates — update the record arrays and the totals follow. Note `computePlacementMetrics()` hardcodes the top-package fields while `getHighestPackageData()` derives them; prefer the latter for new work.
+Derived numbers come from `compute*()` helpers called at render time, never from stored aggregates — update the record arrays and the totals follow.
 
-**A stale duplicate `data/` exists at the repo root.** Nothing imports it and it already lags `src/data/` (47 vs 48 placements, missing `getHighestPackageData`). Always edit `src/data/`.
+**A stale duplicate `data/` exists at the repo root.** Its `.js` files are not imported by anything and already lag `src/data/`. It also holds the real source documents (`events.md`, `department_glance.md`, `vission_and_vission.md`, and the results `.xlsx`). Always edit `src/data/` for code; treat root `data/*.md|xlsx` as inputs.
 
-### Supabase: images are live, datasets are not
+### Academic toppers are generated, not hand-written
 
-[dataService.js](src/services/dataService.js) is the only module that talks to Supabase, and it is **half-adopted**:
+[academicToppers.js](src/data/academicToppers.js) is extracted from `data/II - III - IV - IT-SEM RESULT_ANALYSIS (1).xlsx`. The app never reads `.xlsx` at runtime. Regenerating requires care — the sheets are not uniform:
 
-- `getAssetImageUrl(imageKey, localFallbackPath)` — **in use** by three scenes to resolve hero images from Storage, falling back to the `/assets/*.png` path. Scenes additionally guard with an `onError` handler that swaps back to the local file, so a bad bucket URL degrades silently rather than showing a broken image.
-- `getPlacementsData()` / `getAchievementsData()` — **not called anywhere.** They query the `placements` / `achievements` tables and fall back to the local datasets on any error, with row normalizers reconciling camelCase JS names against Postgres's lowercased columns. Adopting them means converting the consuming scenes to async loading with the local data as initial state.
+- Sheet→year: `sheet1` = II IT (Sem III), `sheet5` = III IT (Sem V), `sheet9` = IV IT (Sem VII).
+- **Column layouts differ.** II/III: GPA `[17]`, credits `[15]`, full load 23. IV: GPA `[14]`, credits `[12]`, full load 16.
+- **Filter to full-credit students before ranking.** Without it the IV IT sheet ranks students who completed only 5 of 16 credits (GPA 10.00) above everyone else. This drops IV IT from 123 rows to 60.
+- The `CGPA` column reads `62` on every row in all sheets — an artifact, not data. Only semester GPA is usable. IV IT's `P/F` column reads `F` for all 123 rows and is likewise unusable.
+- Ranking is GPA desc, tie-break by register number, cut at top 5. **Ties land on the rank-5 boundary in all three years**, so four students with GPAs identical to a listed topper are currently excluded — see the plan file for names if this needs revisiting.
 
-`supabase` is `null` unless both `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set (see `.env.example`); every helper degrades to local data in that case, which is the normal offline-presentation path. Be aware `getStorageImageUrl` defaults its bucket to `'Image'` while `getAssetImageUrl` explicitly passes `'presentation-assets'` — the default never applies on the image path, so changing one does not change the other.
+### Supabase
 
-This is real student data — names, register numbers, and salary figures. Keep it in-repo; don't push it to external services or logs.
+[dataService.js](src/services/dataService.js) is the only module that talks to Supabase:
+
+- `getAssetImageUrl(imageKey, localFallbackPath)` — resolves an image from Storage, falling back to a local `/assets/*.png`. Scenes additionally guard with an `onError` handler that swaps back to the local file.
+- `getPlacementsData()` / `getAchievementsData()` — query the tables and fall back to the local datasets on any error, with row normalizers reconciling camelCase JS names against Postgres's lowercased columns.
+
+**The storage bucket is `Image`** (verified: it responds with object-level `NoSuchKey`, while a bucket that doesn't exist returns `NoSuchBucket`). An earlier `presentation-assets` bucket does **not** exist — if you see that string reappear, it's a regression.
+
+`supabase` is `null` unless both `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set (see `.env.example`); every helper degrades to local data in that case, which is the normal offline path. There is no `.env` in the repo.
+
+The four `hackathon_*.jpg` keys in [hackathonFeatures.js](src/data/hackathonFeatures.js) are **inferred and unverified** — anonymous bucket listing requires an API key. If a hackathon photo doesn't appear, list the bucket and correct `imageKey`; nothing else needs to change. Matching prefers `achievementId` over `competition` because two rows share the BuildFest name (a 1st and a 3rd prize entry).
+
+### Privacy constraint
+
+The datasets contain real student names, register numbers, and salary figures. **`Scene07Placements` deliberately renders company-level data only** — no names, no register numbers. Keep it that way; the aggregation helper `getTopCompanies()` returns no identity fields by design. Note that `placementsData` is still bundled as the offline fallback, so names exist in the JS bundle even though nothing displays them.
 
 ### Styling
 
@@ -93,4 +123,10 @@ Images live in `public/assets/` and are referenced by absolute path (`/assets/ci
 
 ### Reusable UI
 
-`src/components/ui/` — `AnimatedCounter` (rAF ease-out count-up, resets when `isActive` goes false), `CompanyLogo` (hand-built inline SVG/CSS marks keyed by company name in a `switch`, with a generic fallback — add new recruiters as new cases), `HighestPackageSpotlight`, `PlacementDirectoryModal`, `PhotoModal`, `Marquee`, `GlobeVisual`, `ReachMapVisual` (positions `locationsList` by percentage `coords`).
+`src/components/ui/` is deliberately small — only what the 8 scenes use:
+
+- `GlassCard` — the card primitive, used by 7 of 8 scenes.
+- `AnimatedCounter` — rAF ease-out count-up; resets when `isActive` goes false. Supports `prefix`/`suffix`/`decimals`.
+- `CompanyLogo` — hand-built inline SVG/CSS marks keyed by company name in a `switch`, with a generic fallback. Add new recruiters as new cases.
+
+Components for retired scenes (`GlobeVisual`, `ReachMapVisual`, `PhotoModal`, `Marquee`, `HighestPackageSpotlight`, `PlacementDirectoryModal`, `CinematicAchievementSpotlight`) were deleted — recover from git history rather than rewriting if a scene comes back.

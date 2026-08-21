@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { presentationData } from '../../data/presentationData';
 import { getAssetImageUrl } from '../../services/dataService';
-import { Sparkles, Calendar, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 export const Scene01Welcome = ({ isActive, onStartClick }) => {
   const logoImage = getAssetImageUrl('cit_logo.png', presentationData.heroImages.logo);

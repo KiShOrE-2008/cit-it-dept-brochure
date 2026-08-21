@@ -8,11 +8,11 @@ import { ControlDeck } from './ControlDeck';
 import { Scene01Welcome } from '../scenes/Scene01Welcome';
 import { Scene02CollegeDept } from '../scenes/Scene02CollegeDept';
 import { Scene03VisionMission } from '../scenes/Scene03VisionMission';
-import { Scene04Achievements } from '../scenes/Scene04Achievements';
+import { Scene04AcademicToppers } from '../scenes/Scene04AcademicToppers';
 import { Scene05Hackathons } from '../scenes/Scene05Hackathons';
-import { Scene06EventsTimeline } from '../scenes/Scene06EventsTimeline';
+import { Scene06Events } from '../scenes/Scene06Events';
 import { Scene07Placements } from '../scenes/Scene07Placements';
-import { Scene12DepartmentGlance } from '../scenes/Scene12DepartmentGlance';
+import { Scene08DepartmentGlance } from '../scenes/Scene08DepartmentGlance';
 
 export const PresentationShell = () => {
   const [currentScene, setCurrentScene] = useState(0);
@@ -29,7 +29,7 @@ export const PresentationShell = () => {
     "Vision & Mission",
     "Academic Toppers",
     "Hackathons & Competitions",
-    "Events & Timeline",
+    "Events & Initiatives",
     "Placements & Recruiters",
     "Department at a Glance"
   ];
@@ -158,11 +158,11 @@ export const PresentationShell = () => {
       case 0: return <Scene01Welcome isActive={true} onStartClick={() => { selectScene(1); setIsPlaying(true); }} />;
       case 1: return <Scene02CollegeDept isActive={true} />;
       case 2: return <Scene03VisionMission isActive={true} />;
-      case 3: return <Scene04Achievements isActive={true} />;
+      case 3: return <Scene04AcademicToppers isActive={true} />;
       case 4: return <Scene05Hackathons isActive={true} />;
-      case 5: return <Scene06EventsTimeline isActive={true} />;
+      case 5: return <Scene06Events isActive={true} />;
       case 6: return <Scene07Placements isActive={true} />;
-      case 7: return <Scene12DepartmentGlance isActive={true} />;
+      case 7: return <Scene08DepartmentGlance isActive={true} />;
       default: return null;
     }
   };

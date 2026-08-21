@@ -15,12 +15,12 @@ export const presentationData = {
 
   vision: {
     quote: "To lead in the evolving fields of Information Technology by fostering industry-academia collaboration, advancing research, and promoting sustainable practices, preparing students to develop innovative, technology-driven solutions for real-world challenges.",
-    pillars: [
-      { id: "01", title: "Future Leadership & Pedagogy", desc: "To nurture future leaders by adopting innovative teaching methodologies, inspiring a passion for emerging technologies, and equipping students to tackle global challenges effectively." },
-      { id: "02", title: "Sustainable Solutions", desc: "To empower students to develop sustainable solutions that enhance quality of life, transforming communities through innovation and technology." },
-      { id: "03", title: "Ethics & Professionalism", desc: "To instill human values, ethical principles, and professionalism in students, preparing them to contribute meaningfully to society and uphold ethical standards in the industry." },
-      { id: "04", title: "Research & R&D Ecosystem", desc: "To strengthen the research ecosystem by promoting collaboration among academia, industry, and R&D establishments, enabling impactful research and technological progress." },
-      { id: "05", title: "Entrepreneurship & Start-ups", desc: "To inspire entrepreneurship by fostering creativity, leadership, and problem-solving skills, enabling students to develop impactful solutions and successful start-ups." }
+    mission: [
+      { id: "01", text: "To nurture future leaders by adopting innovative teaching methodologies, inspiring a passion for emerging technologies, and equipping students to tackle global challenges effectively." },
+      { id: "02", text: "To empower students to develop sustainable solutions that enhance quality of life, transforming communities through innovation and technology." },
+      { id: "03", text: "To instill human values, ethical principles, and professionalism in students, preparing them to contribute meaningfully to society and uphold ethical standards in the industry." },
+      { id: "04", text: "To strengthen the research ecosystem by promoting collaboration among academia, industry, and R&D establishments, enabling impactful research and technological progress." },
+      { id: "05", text: "To inspire entrepreneurship by fostering creativity, leadership, and problem-solving skills, enabling students to develop impactful solutions and successful start-ups." }
     ]
   },
 
@@ -105,36 +105,81 @@ export const presentationData = {
     }
   ],
 
-  eventsTimeline: [
+  events: [
     {
-      year: "2025",
-      quarter: "Q1 2025",
-      title: "INTECH '25 — National Level Technical Symposium",
-      desc: "Hosted 1,500+ participants from 50+ engineering colleges across South India in 12 coding and robotics events."
+      id: "agentic-bnb",
+      name: "AGENTIC BNB",
+      subtitle: "Agent Building Hackathon 2026",
+      date: "29 June 2026",
+      dateShort: "29 Jun 2026",
+      category: "Hackathon",
+      highlight: "AI & Agent Systems",
+      desc: "A collaborative hackathon where students ideated, built and showcased intelligent solutions using AI, automation, analytics and agent systems.",
+      winners: [
+        { position: "1st", medal: "🥇", team: "Team Kaizen", project: "Autonomous Freelancer Opportunity Agent" },
+        { position: "2nd", medal: "🥈", team: "Team CTRL + ALT + ELITE", project: "Autonomous Freelancer Opportunity Agent" },
+        { position: "3rd", medal: "🥉", team: "Team G.O.A.T", project: "Auto Changelog & Release Notes Agent" }
+      ]
     },
     {
-      year: "2025",
-      quarter: "Q2 2025",
-      title: "AWS Cloud & DevOps Hands-on Bootcamp",
-      desc: "3-day intensive workshop certified 140 IT students in AWS Cloud Practitioner concepts."
+      id: "ieee-forum",
+      name: "WORKSHOP ON IEEE FORUM",
+      subtitle: "Project Proposal Development & Funding Strategies",
+      date: "06 July 2026",
+      dateShort: "06 Jul 2026",
+      category: "Workshop",
+      highlight: "Project Funding & Development",
+      desc: "An interdisciplinary session on IEEE opportunities, proposal development, funding avenues and effective use of the IEEE ecosystem, in association with INNOVIX and the IEEE TEMS Student Chapter.",
+      meta: "Student projects eligible for IEEE funding up to ₹25,000",
+      people: [
+        { name: "Dr. Arun Mathiyalagan", role: "Vice Chair, IEEE Region 10 & India Council Young Professionals" }
+      ]
     },
     {
-      year: "2025",
-      quarter: "Q3 2025",
-      title: "Industrial Visit to Zoho Campus & HCL Technologies",
-      desc: "Full-day exposure for 2nd & 3rd year students to real enterprise software development life cycles."
+      id: "code-to-cloud",
+      name: "CODE TO CLOUD’26",
+      subtitle: "Full Stack Engineering Challenge 2026",
+      date: "19 July 2026",
+      dateShort: "19 Jul 2026",
+      category: "Full-Stack Challenge",
+      highlight: "30 Registered Teams",
+      desc: "Students transformed ideas into functional full-stack solutions across ideation, building and innovation phases, guided by faculty mentors and evaluated by internal and external experts.",
+      meta: "30 teams registered",
+      winners: [
+        { position: "1st", medal: "🥇", team: "Team Raising Devs", project: "E-commerce with local vendors using ML" },
+        { position: "2nd", medal: "🥈", team: "Team Caleix", project: "ZoneMart — Modern E-commerce with AI point management" },
+        { position: "3rd", medal: "🥉", team: "Team She Codes — UI UX", project: "EliteCart — Branded Fashion Store with AI Visualizer" }
+      ]
     },
     {
-      year: "2025",
-      quarter: "Q4 2025",
-      title: "International Guest Lecture Series on GenAI",
-      desc: "Keynote talks by Silicon Valley experts and Alumni working at Google and Microsoft."
+      id: "alumni-interaction",
+      name: "ALUMNI INTERACTION",
+      subtitle: "AI-Powered Full Stack Development & Industry Expectations",
+      date: "07 August 2026",
+      dateShort: "07 Aug 2026",
+      category: "Industry Interaction",
+      highlight: "AI-Powered Full Stack Development",
+      desc: "Alumni professionals connected with students on full-stack development, emerging technologies and industry expectations, bridging academic learning with professional practice.",
+      meta: "Seminar Hall, IT Department",
+      people: [
+        { name: "Mr. Abi Aravindh", role: "Senior Associate — Applications Development, AT&T Global Network Services" },
+        { name: "Mr. Madhoora Mohan", role: "Senior Associate — Applications Development, AT&T Global Network Services" }
+      ]
     },
     {
-      year: "2026",
-      quarter: "Q1 2026",
-      title: "Parent-Teacher Interaction & Alumni Mentorship Connect",
-      desc: "Strengthening student career roadmaps through dedicated mentorship and progress reviews."
+      id: "runtime-rumble",
+      name: "RUNTIME RUMBLE",
+      subtitle: "An Inter-Department Coding Competition",
+      date: "05 January 2026",
+      dateShort: "05 Jan 2026",
+      category: "Coding Competition",
+      highlight: "HackerRank + Codeforces",
+      desc: "A multi-stage competitive programming event in association with IEEE, simulating real-world coding scenarios under time-bound conditions across a HackerRank qualifier and a Codeforces final.",
+      meta: "Inter-department • 2-member teams",
+      winners: [
+        { position: "1st", medal: "🥇", team: "Team O(INFINITY)", project: "Dhanush S, Santhosh S" },
+        { position: "2nd", medal: "🥈", team: "Team VECNA", project: "Mathiyarasan S, Saran R S" }
+      ]
     }
   ],
 
@@ -232,14 +277,15 @@ export const presentationData = {
   ],
 
   departmentGlance: [
-    { label: "Total Students Enrolled", value: "480+", icon: "Users" },
-    { label: "Expert Faculty Members", value: "24+", icon: "GraduationCap" },
-    { label: "Placement Success", value: "95.4%", icon: "Briefcase" },
-    { label: "Highest Placement Package", value: "₹58 LPA", icon: "TrendingUp" },
-    { label: "Hackathons & Contests", value: "40+ Wins", icon: "Trophy" },
-    { label: "Industry MoUs Signed", value: "12+", icon: "FileText" },
-    { label: "Patents & Research Papers", value: "100+", icon: "Award" },
-    { label: "State-of-the-Art CoEs", value: "4 Hubs", icon: "Laptop" }
+    { label: "Total Students Enrolled", value: "480+", numeric: 480, suffix: "+", icon: "Users" },
+    { label: "Expert Faculty Members", value: "24+", numeric: 24, suffix: "+", icon: "GraduationCap" },
+    { label: "Placement Success", value: "95.4%", numeric: 95.4, suffix: "%", decimals: 1, icon: "Briefcase" },
+    { label: "Highest Placement Package", value: "₹58 LPA", numeric: 58, prefix: "₹", suffix: " LPA", icon: "TrendingUp" },
+    { label: "Highest Package Company", value: "Microsoft", text: true, icon: "Building2" },
+    { label: "Hackathons & Contests", value: "40+ Wins", numeric: 40, suffix: "+ Wins", icon: "Trophy" },
+    { label: "Industry MoUs Signed", value: "12+", numeric: 12, suffix: "+", icon: "FileText" },
+    { label: "Patents & Research Papers", value: "100+", numeric: 100, suffix: "+", icon: "Award" },
+    { label: "State-of-the-Art CoEs", value: "4 Hubs", numeric: 4, suffix: " Hubs", icon: "Laptop" }
   ],
 
   studentCare: [
